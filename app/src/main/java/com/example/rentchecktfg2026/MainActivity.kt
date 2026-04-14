@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 import com.example.tfg.presentation.CandidatosAct
-import com.example.tfg.presentation.CandidatosViewModel
+import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 import com.example.tfg.domain.model.Candidato
 

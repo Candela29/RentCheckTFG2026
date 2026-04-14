@@ -1,4 +1,4 @@
-package com.example.tfg.presentation
+package com.example.rentchecktfg2026.presentation.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
