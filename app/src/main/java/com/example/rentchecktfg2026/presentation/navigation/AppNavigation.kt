@@ -11,32 +11,19 @@ import com.example.rentchecktfg2026.presentation.ui.screens.ScoringScreen
 
 @Composable
 fun AppNavigation(){
-
     val navController = rememberNavController()
 
     NavHost(
-
         navController = navController,
-
         startDestination = Screen.Registro.route
-
     ){
 
         composable(Screen.Registro.route){
-
             RegistroScreen(navController)
-
         }
-
-
-
 
         composable(Screen.Scoring.route){
-
             ScoringScreen()
-
         }
-
     }
-
 }
