@@ -5,14 +5,14 @@ data class User (
     @DocumentId val id:String ="",
     val name:String ="",
     val email:String ="",
-    val role:String="",
+    val role:String="", //"INQUILINO o INMOBILIARIA"
     val telefono:String="",
+    val description:String="",
 
     // Estos campos son opcionales
     val dniUrl: String? = null,
     val nominaUrl: String? = null,
-    val scoring: Int? = null,
-    val CIF: String? = null // Por ejemplo, esto solo lo tendría la Inmobiliaria
-){
-    constructor() : this("","","")
-}
+    val contractType: String = "",
+    val scoring: Int = 0,
+    val cif: String? = null // Por ejemplo, esto solo lo tendría la Inmobiliaria
+)

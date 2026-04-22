@@ -11,4 +11,10 @@ sealed class Screen(val route:String){
 
     object Scoring: Screen("scoring")
 
+    object AltaPropiedad: Screen("Alta Propiedad")
+    object CardRol: Screen("CardRol")
+
+
+
+
 }

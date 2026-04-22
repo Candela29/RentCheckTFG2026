@@ -1,4 +1,4 @@
-package com.example.tfg.presentation
+package com.example.rentchecktfg2026.presentation.ui.screens
 
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
@@ -26,9 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.rentchecktfg2026.domain.model.User
 import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
-import com.example.tfg.domain.model.Candidato
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +67,7 @@ fun CandidatosAct(vm: CandidatosViewModel) {
 }
 
 @Composable
-fun CandidatoCard(c: Candidato) {
+fun CandidatoCard(c: User) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -79,21 +80,21 @@ fun CandidatoCard(c: Candidato) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = c.nombre, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(text = c.name, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Text(text = c.email, color = Color.Gray, fontSize = 14.sp)
-                Text(text = "Contrato: ${c.tipoContrato}", fontSize = 12.sp)
+                Text(text = "Contrato: ${c.contractType}", fontSize = 12.sp)
             }
 
             // El "Semáforo" de puntuación
             val colorPuntos = when {
-                c.puntuacion > 70 -> Color(0xFF4CAF50) // Verde
-                c.puntuacion > 40 -> Color(0xFFFFC107) // Amarillo
+                c.scoring > 70 -> Color(0xFF4CAF50) // Verde
+                c.scoring > 40 -> Color(0xFFFFC107) // Amarillo
                 else -> Color(0xFFF44336) // Rojo
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "${c.puntuacion}",
+                    text = "${c.scoring}",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = colorPuntos
@@ -107,8 +108,9 @@ fun CandidatoCard(c: Candidato) {
 @Preview(showBackground = true)
 @Composable
 fun CandidatosActPreview() {
-    val viewModel = CandidatosViewModel()
     RentCheckTFG2026Theme {
+        // En las previews, si no queremos errores, creamos el VM así:
+        val viewModel = CandidatosViewModel()
         CandidatosAct(vm = viewModel)
     }
 }

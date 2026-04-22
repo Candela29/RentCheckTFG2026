@@ -10,7 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.example.rentchecktfg2026.utils.*
+import com.example.rentchecktfg2026.presentation.ui.utils.*
+
 
 @Composable
 fun ScoringScreen(){

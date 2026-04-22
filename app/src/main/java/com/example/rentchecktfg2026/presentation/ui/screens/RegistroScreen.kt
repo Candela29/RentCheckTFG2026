@@ -19,106 +19,85 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.rentchecktfg2026.navigation.Screen
+
 import com.example.rentchecktfg2026.R
 import com.example.rentchecktfg2026.domain.model.User
-import com.example.rentchecktfg2026.model.User
+
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.viewmodels.RegistroViewModel
 
 @Composable
-fun RegistroScreen(navController: NavController) {
-
+fun RegistroScreen(
+    navController: NavController,
+    registroViewModel: RegistroViewModel = viewModel()
+) {
+    // Estados locales para los formularios
     var rol by remember { mutableStateOf("") }
     var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    var mensaje by remember { mutableStateOf("") }
-    var loading by remember { mutableStateOf(false) }
-
     var expanded by remember { mutableStateOf(false) }
 
-    val prefijos = listOf(
-        "+34 🇪🇸",
-        "+504 🇭🇳",
-        "+52 🇲🇽",
-        "+54 🇦🇷",
-        "+1 🇺🇸"
-    )
+    // Estados observados del ViewModel
+    val loading by registroViewModel.loading.collectAsState()
+    val mensaje by registroViewModel.mensaje.collectAsState()
+    val registroExitoso by registroViewModel.registroExitoso.collectAsState()
 
-    var prefijoSeleccionado by remember {
-        mutableStateOf(prefijos[0])
+    val prefijos = listOf("+34 🇪🇸", "+504 🇭🇳", "+52 🇲🇽", "+54 🇦🇷", "+1 🇺🇸")
+    var prefijoSeleccionado by remember { mutableStateOf(prefijos[0]) }
+
+    // Navegación automática cuando el registro es exitoso
+    LaunchedEffect(registroExitoso) {
+        if (registroExitoso) {
+            navController.navigate(Screen.Login.route) {
+                popUpTo(Screen.Registro.route) { inclusive = true }
+            }
+        }
     }
 
-    val isPreview = LocalInspectionMode.current
-
-    val auth = if (!isPreview) FirebaseAuth.getInstance() else null
-    val db = if (!isPreview) FirebaseFirestore.getInstance() else null
-
-
     Scaffold { innerPadding ->
-
         Column(
-
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(20.dp),
-
             horizontalAlignment = Alignment.CenterHorizontally
-
-        ){
-
+        ) {
             Spacer(modifier = Modifier.height(30.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.rentcheck),
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo",
                 modifier = Modifier.size(210.dp)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                "Regístrate para comenzar",
-                style = MaterialTheme.typography.titleMedium
-            )
-
+            Text("Regístrate para comenzar", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(20.dp))
-
             Text("1. Elige perfil")
-
             Spacer(modifier = Modifier.height(10.dp))
 
-            Row{
-
-                CardRol("Inquilino", rol == "Inquilino") {
-                    rol = "Inquilino"
-                }
-
+            // Usando el CardRol de tu compañera
+            Row {
+                CardRol("Inquilino", rol == "Inquilino") { rol = "Inquilino" }
                 Spacer(modifier = Modifier.width(10.dp))
-
-                CardRol("Inmobiliaria", rol == "Inmobiliaria") {
-                    rol = "Inmobiliaria"
-                }
-
+                CardRol("Inmobiliaria", rol == "Inmobiliaria") { rol = "Inmobiliaria" }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Campos de texto comunes
             TextField(
                 value = nombre,
                 onValueChange = { nombre = it },
                 label = { Text("Nombre") },
-                leadingIcon = {
-                    Icon(Icons.Default.Person, null)
-                },
-                singleLine = true,
+                leadingIcon = { Icon(Icons.Default.Person, null) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -128,283 +107,87 @@ fun RegistroScreen(navController: NavController) {
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                leadingIcon = {
-                    Icon(Icons.Default.Email, null)
-                },
-                singleLine = true,
+                leadingIcon = { Icon(Icons.Default.Email, null) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-
-
-                Box{
-
+            // Teléfono con prefijo
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Box {
                     Row(
                         modifier = Modifier
-                            .border(
-                                1.dp,
-                                Color.Gray,
-                                RoundedCornerShape(8.dp)
-                            )
-                            .clickable {
-                                expanded = true
-                            }
-                            .padding(
-                                horizontal = 12.dp,
-                                vertical = 16.dp
-                            )
-                    ){
-
-                        Icon(
-                            Icons.Default.Phone,
-                            contentDescription = null
-                        )
-
+                            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                            .clickable { expanded = true }
+                            .padding(horizontal = 12.dp, vertical = 16.dp)
+                    ) {
+                        Icon(Icons.Default.Phone, null)
                         Spacer(modifier = Modifier.width(6.dp))
-
                         Text(prefijoSeleccionado)
-
                     }
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = {
-                            expanded = false
-                        }
-                    ){
-
-                        prefijos.forEach{
-
+                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        prefijos.forEach { item ->
                             DropdownMenuItem(
-                                text = {
-                                    Text(it)
-                                },
-                                onClick = {
-
-                                    prefijoSeleccionado = it
-                                    expanded = false
-
-                                }
+                                text = { Text(item) },
+                                onClick = { prefijoSeleccionado = item; expanded = false }
                             )
-
                         }
-
                     }
-
                 }
-
                 Spacer(modifier = Modifier.width(10.dp))
-
-
-
-
                 TextField(
-
                     value = telefono,
-
-                    onValueChange = {
-
-                        telefono = it.filter {
-
-                                char -> char.isDigit()
-
-                        }
-
-                    },
-
+                    onValueChange = { input -> telefono = input.filter { it.isDigit() } },
                     label = { Text("Teléfono") },
-
-                    singleLine = true,
-
                     modifier = Modifier.weight(1f)
-
                 )
-
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
-
             TextField(
-
                 value = password,
-
                 onValueChange = { password = it },
-
                 label = { Text("Password") },
-
                 visualTransformation = PasswordVisualTransformation(),
-
-                leadingIcon = {
-
-                    Icon(Icons.Default.Lock, null)
-
-                },
-
-                singleLine = true,
-
+                leadingIcon = { Icon(Icons.Default.Lock, null) },
                 modifier = Modifier.fillMaxWidth()
-
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-
+            // BOTÓN SIMPLIFICADO: Ahora solo llama al ViewModel
             Button(
-
-                colors = ButtonDefaults.buttonColors(
-
-                    containerColor = Color(0xFF2E5A88)
-
-                ),
-
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E5A88)),
                 enabled = !loading,
-
                 modifier = Modifier.fillMaxWidth(),
-
                 onClick = {
-
-
-                    if (
-
-                        nombre.isBlank()
-
-                        || email.isBlank()
-
-                        || telefono.isBlank()
-
-                        || password.isBlank()
-
-                        || rol.isBlank()
-
-                    ){
-
-                        mensaje = "Completa todos los campos"
-                        return@Button
-
-                    }
-
-
-                    loading = true
-
-
-                    val prefijoLimpio =
-                        prefijoSeleccionado.split(" ")[0]
-
-
-                    val telefonoCompleto =
-                        prefijoLimpio + telefono
-
-
-                    if (auth != null && db != null){
-
-                        auth.createUserWithEmailAndPassword(
-                            email,
-                            password
-                        )
-
-                            .addOnSuccessListener {
-
-
-                                val uid =
-                                    auth.currentUser?.uid
-
-
-                                if(uid != null){
-
-                                    val user = User(
-
-                                        uid = uid,
-                                        nombre = nombre,
-                                        email = email,
-                                        telefono = telefonoCompleto,
-                                        rol = rol
-
-                                    )
-
-
-                                    db.collection("users")
-
-                                        .document(uid)
-
-                                        .set(user)
-
-                                        .addOnSuccessListener {
-
-                                            loading = false
-
-
-                                            if (rol == "Inquilino"){
-
-                                                navController.navigate(
-                                                    Screen.PerfilInquilino.route
-                                                )
-
-                                            }
-                                            else{
-
-                                                navController.navigate(
-                                                    Screen.Login.route
-                                                )
-
-                                            }
-
-                                        }
-
-                                }
-
-                            }
-
-                            .addOnFailureListener {
-
-                                loading = false
-                                mensaje = it.message ?: "Error"
-
-                            }
-
-                    }
-
-                }
-
-            ){
-
-                if (loading){
-
-                    CircularProgressIndicator(
-                        color = Color.White
+                    val prefijoLimpio = prefijoSeleccionado.split(" ")[0]
+                    registroViewModel.registrarUsuario(
+                        nombre = nombre,
+                        email = email,
+                        telefono = prefijoLimpio + telefono,
+                        password = password,
+                        rol = rol
                     )
-
                 }
-                else{
-
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
                     Text("Crear cuenta")
-
                 }
-
             }
-
 
             Spacer(modifier = Modifier.height(10.dp))
 
-
-            Text(
-                mensaje,
-                color = Color.Red
-            )
-
+            // Mensajes de error del ViewModel
+            if (mensaje.isNotEmpty()) {
+                Text(text = mensaje, color = Color.Red)
+            }
         }
-
     }
-
 }
 
 

@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,16 +46,34 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.viewmodels.LoginViewModel
 
 import com.example.rentchecktfg2026.R
+import com.example.rentchecktfg2026.presentation.navigation.Screen
+
 @Composable
 fun Login(
+    navController: NavController,
     loginViewModel: LoginViewModel= viewModel()
 ){
     val username by loginViewModel.username.collectAsState()
     val password by loginViewModel.password.collectAsState()
     val passwordVisible by loginViewModel.passwordVisible.collectAsState()
+    val roleResult by loginViewModel.roleResult.collectAsState()
+    val error by loginViewModel.error.collectAsState()
 
     val azul= Color(0xFF2D63ED)
     val background = Color.White
+
+    LaunchedEffect(roleResult) {
+        roleResult?.let{
+            role->
+            when(role.uppercase()){
+                "INQUILINO" -> {
+                    navController.navigate(Screen.PerfilInquilino.route)
+                }
+                "INMOBILIARIA" -> {
+                    navController.navigate(Screen.AltaPropiedad.route)
+                } }
+        }
+    }
 
     Scaffold (containerColor = background){
             innerPadding->
@@ -109,6 +128,7 @@ fun Login(
 
             Button(
                 onClick = {
+                    loginViewModel.onLoginClick()
                 },
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp),
@@ -120,6 +140,15 @@ fun Login(
             ){
                 Text("INICIAR SESIÓN")
             }
+
+            if (error.isNotEmpty()) {
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(32.dp))
             Row (
                 modifier=Modifier.fillMaxWidth(),
@@ -131,7 +160,7 @@ fun Login(
                     color = Color.Gray
                 )
                 TextButton(
-                    onClick = {}
+                    onClick = {navController.navigate(Screen.Registro.route)}
                 ) {
                     Text(
                         text = "Regístrate",
@@ -148,5 +177,5 @@ fun Login(
 @Preview(showBackground = true)
 @Composable
 fun previewLogin(){
-    Login()
+    Login(rememberNavController())
 }
