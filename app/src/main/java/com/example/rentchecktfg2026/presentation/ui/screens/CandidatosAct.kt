@@ -47,7 +47,7 @@ fun CandidatosAct(vm: CandidatosViewModel) {
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFF8F9FA)) // Gris muy clarito de fondo
+                .background(Color(0xFFF8F9FA))
         ) {
             Button(
                 onClick = { vm.filterTop() },
@@ -85,7 +85,7 @@ fun CandidatoCard(c: User) {
                 Text(text = "Contrato: ${c.contractType}", fontSize = 12.sp)
             }
 
-            // El "Semáforo" de puntuación
+            // El Semáforo de puntuación
             val colorPuntos = when {
                 c.scoring > 70 -> Color(0xFF4CAF50) // Verde
                 c.scoring > 40 -> Color(0xFFFFC107) // Amarillo
