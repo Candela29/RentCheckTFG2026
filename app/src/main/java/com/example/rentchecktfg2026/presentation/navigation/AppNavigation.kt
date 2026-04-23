@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.ui.screens.AltaPropiedad
+import com.example.rentchecktfg2026.presentation.ui.screens.InquilinoPerfil
 import com.example.rentchecktfg2026.presentation.ui.screens.Login
 import com.example.rentchecktfg2026.presentation.ui.screens.RegistroScreen
 import com.example.rentchecktfg2026.presentation.ui.screens.ScoringScreen
@@ -16,7 +17,7 @@ fun AppNavigation(){
 
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Screen.Registro.route
+    NavHost(navController = navController, startDestination = Screen.Login.route
 
     ){
 
@@ -34,6 +35,10 @@ fun AppNavigation(){
         }
         composable (Screen.Login.route) {
             Login(navController)
+        }
+
+        composable (Screen.PerfilInquilino.route ){
+            InquilinoPerfil(navController)
         }
 
 

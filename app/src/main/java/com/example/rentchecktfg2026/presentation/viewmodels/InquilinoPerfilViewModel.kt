@@ -2,12 +2,18 @@ package com.example.rentchecktfg2026.presentation.viewmodels
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 
-class InquilinoPerfilViewModel : ViewModel() {
+class InquilinoPerfilViewModel(
+    private val repository: UserRepository= UserRepository()
+) : ViewModel() {
 
     // Estado para el Nombre (Vacío por defecto)
     private val _nombre = MutableStateFlow("")
@@ -26,77 +32,46 @@ class InquilinoPerfilViewModel : ViewModel() {
     val nominaSubida: StateFlow<Boolean> = _nominaSubida.asStateFlow()
 
 
-    fun subirDocumento(uri: Uri, esDni: Boolean) {
+    fun subidaDocumento(uri: Uri, esDni: Boolean) {
         // Aquí en el futuro conectarás con Firebase Storage
-        if (esDni) {
-            _dniSubido.value = true
-        } else {
-            _nominaSubida.value = true
+        val uid= FirebaseAuth.getInstance().currentUser?.uid ?:return
+        val tipo =if(esDni)"dni" else "nomina"
+        val campoFirestore= if (esDni) "dniUrl" else "nominaUrl"
+        viewModelScope.launch {
+            //Subir a Storage
+            val urlDescarga = repository.subirDocumento(uri,tipo)
+
+            if (urlDescarga != null) {
+
+                // PASO B: Guardamos esa URL en la ficha de Firestore del usuario
+                // ¡Aquí es donde usas el otro método!
+                val exito = repository.updateDocumentUrl(
+                    id = uid,
+                    campo = campoFirestore,
+                    url = urlDescarga
+                )
+                if(exito){
+                    if(esDni) _dniSubido.value= true else _nominaSubida.value= true
+                }
+            }
         }
-        println("Archivo seleccionado en: $uri")
+
     }
 
     // Funciones por si quieres rellenar los datos desde otra pantalla
     fun cargarDatosUsuario(nombreUser: String, emailUser: String) {
-        _nombre.value = nombreUser
-        _email.value = emailUser
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        viewModelScope.launch {
+            val usuario = repository.getUserById(uid)
+            usuario?.let {
+                _nombre.value = it.name
+                _email.value = it.email
+                // Si la URL no está vacía, marcamos como subido
+                _dniSubido.value = it.dniUrl.isNotEmpty()
+                _nominaSubida.value = it.nominaUrl.isNotEmpty()
+            }
+        }
     }
 }
 
 
-/*
- init{
-        cargarDatos()
-    }
-fun cargarDatos(){
-        val uid=auth.currentUser?.uid
-        if (uid!=null){
-            viewModelScope.launch {
-                try{
-                    // 3. Llamamos al repositorio para obtener el objeto User completo
-                    val usuario = repository.obtenerDatosUsuario(uid)
-
-                    if (usuario != null) {
-                        // 4. Actualizamos los estados con los datos reales de la base de datos
-                        _nombre.value = usuario.name
-                        _email.value = usuario.email
-
-                        // 5. ¡ESTO ES CLAVE! Si el usuario ya había subido documentos antes,
-                        // marcamos los checks como "true" para que no tenga que volver a subirlos.
-                        if (usuario.dniUrl?.isNotEmpty() == true) {
-                            _dniSubido.value = true
-                        }
-
-                        if (usuario.nominaUrl?.isNotEmpty() == true) {
-                            _nominaSubida.value = true
-                        }
-                    }
-                }catch (e: Exception){
-                    null
-                }
-            }
-        }
-    }
-    fun subirDocumento(uri: Uri, esDni: Boolean) {
-        val uid = auth.currentUser?.uid ?: return
-        viewModelScope.launch {
-            val carpeta = if (esDni) "dni" else "nomina"
-            val campoFirestore = if (esDni) "dniUrl" else "nominaUrl"
-
-            // PASO 1: Subir a Storage y obtener la URL de descarga
-            val urlDescarga = repository.subirDocumento(uri, carpeta)
-
-            if (urlDescarga != null) {
-                // PASO 2: Actualizar el documento del usuario en Firestore con la URL
-                val exito = repository.actualizarDatosUsuario(
-                    uid = uid,
-                    datos = mapOf(campoFirestore to urlDescarga)
-                )
-                if (exito) {
-                    // Actualizamos el estado visual de la pantalla
-                    if (esDni) _dniSubido.value = true else _nominaSubida.value = true
-                }
-            }
-
-        }
-    }*/

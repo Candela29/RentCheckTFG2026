@@ -10,8 +10,8 @@ data class User (
     val description:String="",
 
     // Estos campos son opcionales
-    val dniUrl: String? = null,
-    val nominaUrl: String? = null,
+    val dniUrl: String = "",
+    val nominaUrl: String = "",
     val contractType: String = "",
     val scoring: Int = 0,
     val cif: String? = null // Por ejemplo, esto solo lo tendría la Inmobiliaria
