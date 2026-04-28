@@ -3,25 +3,32 @@ package com.example.rentchecktfg2026.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.domain.model.User
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import kotlinx.coroutines.launch
 
-class CandidatosViewModel : ViewModel() {
+class CandidatosViewModel(
+    private val repository: UserRepository= UserRepository()
+) : ViewModel() {
     private val _candidatos = MutableLiveData<List<User>>()
     val candidatos: LiveData<List<User>> = _candidatos
 
+
+
     init {
-        loadDummyData()
+        obtenerCandidatosReales()
     }
 
-    private fun loadDummyData() {
+    private fun obtenerCandidatosReales() {
         // 2. Usamos el modelo User con los nombres de campos nuevos
-        _candidatos.value = listOf(
-            User(name = "Candela García", email = "candela.g@email.com", scoring = 85, contractType = "Indefinido", role = "INQUILINO"),
-            User(name = "Sandra Cascos", email = "sandra.c@email.com", scoring = 45, contractType = "Temporal", role = "INQUILINO"),
-            User(name = "Any Fiallos", email = "any.f@email.com", scoring = 72, contractType = "Autónomo", role = "INQUILINO"),
-            User(name = "Juan Pérez", email = "juan@email.com", scoring = 30, contractType = "Prácticas", role = "INQUILINO")
-        )
+        viewModelScope.launch {
+            val lista = repository.obtenerInquilinos()
+            _candidatos.value = lista
+        }
     }
+
+
 
     // 3. Ojo aquí: cambiamos 'it.puntuacion' por 'it.scoring'
     fun filterTop() {

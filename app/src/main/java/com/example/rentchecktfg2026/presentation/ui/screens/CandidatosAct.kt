@@ -2,20 +2,28 @@ package com.example.rentchecktfg2026.presentation.ui.screens
 
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -35,13 +43,21 @@ import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 @Composable
 fun CandidatosAct(vm: CandidatosViewModel) {
     val candidatos by vm.candidatos.observeAsState(emptyList())
+    val azul= Color(0xFF2D63ED)
+    val gris = Color(0xFFF7F9FC)
+
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Candidatos Rent-Check", fontWeight = FontWeight.Bold) }
+                title = { Text("Candidatos Rent-Check", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = azul,
+                    titleContentColor = Color.White
+                )
             )
-        }
+        },
+        containerColor = gris
     ) { padding ->
         Column(
             modifier = Modifier
@@ -49,25 +65,63 @@ fun CandidatosAct(vm: CandidatosViewModel) {
                 .fillMaxSize()
                 .background(Color(0xFFF8F9FA))
         ) {
-            Button(
-                onClick = { vm.filterTop() },
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
-            ) {
-                Text("Filtrar Solvencia Alta")
-            }
 
-            LazyColumn {
-                items(candidatos) { candidato ->
-                    CandidatoCard(candidato)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text("Candidatos registrados",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                    )
+                Button(
+                    onClick = { vm.filterTop() },
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = azul),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Filtrar Solvencia Alta")
+                }
+
+                LazyColumn {
+                    items(candidatos) { candidato ->
+                        CandidatoCard(candidato)
+                    }
+                }
+
+                if(candidatos.isEmpty()){
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.People,contentDescription = null),
+                            Text("No hay candidatos aún", color = Color.Gray)
+                        }
+                    }
+                }else{
+                    LazyColumn {
+                        items(candidatos) { candidato ->
+                            CandidatoCard(candidato)
+                        }
+                    }
                 }
             }
-        }
+
+
+            }
+
     }
 }
 
 @Composable
 fun CandidatoCard(c: User) {
+    val colorPuntos=when {
+        c.scoring>70-> Color(0xFF4CAF50)
+        c.scoring> 40 -> Color(0xFFFFC107)
+        else -> Color(0xFFF44336)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()

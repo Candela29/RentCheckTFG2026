@@ -47,6 +47,7 @@ import com.example.rentchecktfg2026.presentation.viewmodels.LoginViewModel
 
 import com.example.rentchecktfg2026.R
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 
 @Composable
 fun Login(
@@ -95,7 +96,7 @@ fun Login(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold)
 
-            Spacer(modifier= Modifier.padding(16.dp))
+            Spacer(modifier= Modifier.height(16.dp))
 
             TextField(
                 value=username,
@@ -107,7 +108,7 @@ fun Login(
                 shape= RoundedCornerShape(8.dp)
 
             )
-            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
                 value=password,
@@ -176,6 +177,10 @@ fun Login(
 
 @Preview(showBackground = true)
 @Composable
-fun previewLogin(){
-    Login(rememberNavController())
+fun PreviewLogin(){
+    //Login(rememberNavController())
+
+        // Pasa un NavController vacío que no haga nada
+        Login(navController = rememberNavController())
+
 }

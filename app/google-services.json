@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1016959009170",
+    "project_id": "rentcheck-646df",
+    "storage_bucket": "rentcheck-646df.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016959009170:android:916fc4c880477b6e1ac14b",
+        "android_client_info": {
+          "package_name": "com.example.rent_check"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPZ0l7g4wjGT1RZHOWjrpzrtwvs4Gu4bA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016959009170:android:ff6f1a2af074b9e51ac14b",
+        "android_client_info": {
+          "package_name": "com.example.rentchecktfg2026"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPZ0l7g4wjGT1RZHOWjrpzrtwvs4Gu4bA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
