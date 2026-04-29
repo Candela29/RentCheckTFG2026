@@ -90,6 +90,8 @@ class UserRepositoryImpl(){
             false
         }
     }
+
+    //
     /**
      * Obtiene todos los usuarios con rol "Inquilino" (Para la vista de la Inmobiliaria)
      */
