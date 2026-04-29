@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,6 +48,7 @@ import com.example.rentchecktfg2026.presentation.viewmodels.LoginViewModel
 
 import com.example.rentchecktfg2026.R
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 
 @Composable
 fun Login(
@@ -70,7 +72,7 @@ fun Login(
                     navController.navigate(Screen.PerfilInquilino.route)
                 }
                 "INMOBILIARIA" -> {
-                    navController.navigate(Screen.AltaPropiedad.route)
+                    navController.navigate(Screen.MenuInmobiliaria.route)
                 } }
         }
     }
@@ -88,38 +90,38 @@ fun Login(
                 painter= painterResource(id=R.drawable.logo),
                 contentDescription = "Logo Rent Check",
                 modifier = Modifier
-                    .size(280.dp).padding(16.dp),
+                    .size(150.dp).padding(16.dp),
                 contentScale = ContentScale.Fit
             )
             Text(text="Bienvenido de nuevo", color=Color.Black,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold)
 
-            Spacer(modifier= Modifier.padding(16.dp))
+            Spacer(modifier= Modifier.height(16.dp))
 
-            TextField(
+            OutlinedTextField(
                 value=username,
                 onValueChange = {loginViewModel.setUsername(it)},
                 label={Text("Correo electrónico")},
                 leadingIcon = {
-                    Icon(Icons.Default.Email,contentDescription=null)},
+                    Icon(Icons.Default.Email,contentDescription=null, tint = azul)},
                 modifier = Modifier.fillMaxWidth(),
                 shape= RoundedCornerShape(8.dp)
 
             )
-            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            TextField(
+            OutlinedTextField(
                 value=password,
                 onValueChange = {loginViewModel.setPassword(it)},
                 label={Text("Contraseña")},
-                leadingIcon = {Icon(imageVector = Icons.Default.Lock, contentDescription = null)},
+                leadingIcon = {Icon(imageVector = Icons.Default.Lock, contentDescription = null,tint = azul)},
                 visualTransformation = if(passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier=Modifier.fillMaxWidth(),
                 trailingIcon = {
                     val image= if(passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                     IconButton(onClick = {loginViewModel.setPasswordVisible()}) {
-                        Icon(imageVector = image, contentDescription = null)
+                        Icon(imageVector = image, contentDescription = null,tint = azul)
                     }
                 },
                 shape=RoundedCornerShape(8.dp)
@@ -176,6 +178,10 @@ fun Login(
 
 @Preview(showBackground = true)
 @Composable
-fun previewLogin(){
-    Login(rememberNavController())
+fun PreviewLogin(){
+    //Login(rememberNavController())
+
+        // Pasa un NavController vacío que no haga nada
+        Login(navController = rememberNavController())
+
 }

@@ -59,11 +59,11 @@ fun InquilinoPerfil(
 
     //Selectores de archivos
     val launcherDni= rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri->
-        uri?.let { inquilinoPerfilViewModel.subirDocumento(it, esDni = true) }
+        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
     }
 
     val launcherNomina = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { inquilinoPerfilViewModel.subirDocumento(it, esDni = false) }
+        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = false) }
     }
     val azul= Color(0xFF2D63ED)
     val celeste = Color(0xFFE3EDFF)
