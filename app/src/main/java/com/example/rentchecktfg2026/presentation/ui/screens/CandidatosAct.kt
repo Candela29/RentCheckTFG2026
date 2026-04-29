@@ -34,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.domain.model.User
 import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
@@ -41,7 +43,9 @@ import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CandidatosAct(vm: CandidatosViewModel) {
+fun CandidatosAct(
+    navController: NavController,
+    vm: CandidatosViewModel) {
     val candidatos by vm.candidatos.observeAsState(emptyList())
     val azul= Color(0xFF2D63ED)
     val gris = Color(0xFFF7F9FC)
@@ -74,10 +78,11 @@ fun CandidatosAct(vm: CandidatosViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Text("Candidatos registrados",
+                Text(
+                    "Candidatos registrados",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
-                    )
+                )
                 Button(
                     onClick = { vm.filterTop() },
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -86,17 +91,12 @@ fun CandidatosAct(vm: CandidatosViewModel) {
                 ) {
                     Text("Filtrar Solvencia Alta")
                 }
-
-                LazyColumn {
-                    items(candidatos) { candidato ->
-                        CandidatoCard(candidato)
-                    }
-                }
+            }
 
                 if(candidatos.isEmpty()){
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.People,contentDescription = null),
+                            Icon(Icons.Default.People,contentDescription = null)
                             Text("No hay candidatos aún", color = Color.Gray)
                         }
                     }
@@ -113,7 +113,7 @@ fun CandidatosAct(vm: CandidatosViewModel) {
             }
 
     }
-}
+
 
 @Composable
 fun CandidatoCard(c: User) {
@@ -159,12 +159,11 @@ fun CandidatoCard(c: User) {
     }
 }
 
+/*@Composable
 @Preview(showBackground = true)
-@Composable
+
 fun CandidatosActPreview() {
-    RentCheckTFG2026Theme {
-        // En las previews, si no queremos errores, creamos el VM así:
-        val viewModel = CandidatosViewModel()
-        CandidatosAct(vm = viewModel)
-    }
-}
+
+    CandidatosAct(rememberNavController())
+
+}*/

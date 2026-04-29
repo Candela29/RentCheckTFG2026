@@ -14,6 +14,8 @@ sealed class Screen(val route:String){
     object AltaPropiedad: Screen("Alta Propiedad")
     object CardRol: Screen("CardRol")
 
+    object CandidatosAct: Screen("Candidatos")
+    object MenuInmobiliaria:Screen ("Menú inmobiliaria")
 
 
 

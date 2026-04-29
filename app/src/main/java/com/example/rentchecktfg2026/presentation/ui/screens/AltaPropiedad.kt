@@ -44,13 +44,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AltaPropiedad(
-    // navController: NavController,
+    navController: NavController,
     propiedadViewModel: PropiedadViewModel = viewModel()
 ) {
     val titulo by propiedadViewModel.titulo.collectAsState()
@@ -63,6 +66,7 @@ fun AltaPropiedad(
     val celeste = Color(0xFFE3EDFF)
     Scaffold(
         topBar = {
+            MenuDeAcciones(navController)
             TopAppBar(
                 title = { Text("Nueva Propiedad", fontWeight = FontWeight.Bold, color = Color.White) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = azul)
@@ -238,5 +242,5 @@ fun AltaPropiedad(
 @Preview
 @Composable
 fun previewAlta(){
-    AltaPropiedad()
+    AltaPropiedad(rememberNavController())
 }
