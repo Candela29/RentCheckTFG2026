@@ -9,7 +9,8 @@ import com.example.rentchecktfg2026.domain.repositories.UserRepository
 import kotlinx.coroutines.launch
 
 class CandidatosViewModel(
-    private val repository: UserRepository= UserRepository()
+    private val repository: UserRepository= UserRepository(),
+    private val isPreview: Boolean=false
 ) : ViewModel() {
     private val _candidatos = MutableLiveData<List<User>>()
     val candidatos: LiveData<List<User>> = _candidatos
