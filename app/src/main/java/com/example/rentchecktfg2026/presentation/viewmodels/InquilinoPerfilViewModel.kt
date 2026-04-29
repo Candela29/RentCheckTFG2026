@@ -3,7 +3,7 @@ package com.example.rentchecktfg2026.presentation.viewmodels
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 
 class InquilinoPerfilViewModel(
-    private val repository: UserRepository= UserRepository()
+    private val repository: UserRepositoryImpl= UserRepositoryImpl()
 ) : ViewModel() {
 
     // Estado para el Nombre (Vacío por defecto)

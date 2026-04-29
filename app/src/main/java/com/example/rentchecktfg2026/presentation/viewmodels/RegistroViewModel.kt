@@ -1,23 +1,19 @@
 package com.example.rentchecktfg2026.presentation.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.domain.model.User
-import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RegistroViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
-    private val userRepository= UserRepository(FirebaseFirestore.getInstance())
+    private val userRepository= UserRepositoryImpl(FirebaseFirestore.getInstance())
 
     // 1. Definimos los estados (Estilo StateFlow)
     private val _loading = MutableStateFlow(false)
