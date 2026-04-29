@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -47,6 +50,7 @@ import com.example.rentchecktfg2026.presentation.viewmodels.LoginViewModel
 
 import com.example.rentchecktfg2026.R
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.utils.ResponsiveContainer
 
 @Composable
 fun Login(
@@ -77,18 +81,23 @@ fun Login(
 
     Scaffold (containerColor = background){
             innerPadding->
-        Column (modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center){
+        ResponsiveContainer {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
 
             Image(
                 painter= painterResource(id=R.drawable.logo),
                 contentDescription = "Logo Rent Check",
                 modifier = Modifier
-                    .size(280.dp).padding(16.dp),
+                    .fillMaxWidth(0.55f)
+                    .heightIn(max = 250.dp),
                 contentScale = ContentScale.Fit
             )
             Text(text="Bienvenido de nuevo", color=Color.Black,
@@ -171,6 +180,7 @@ fun Login(
             }
         }
     }
+}
 }
 
 

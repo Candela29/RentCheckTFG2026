@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -42,6 +44,7 @@ fun RegistroScreen(
     var email by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     // Estados observados del ViewModel
@@ -65,6 +68,7 @@ fun RegistroScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState()) //habilita scroll
                 .padding(innerPadding)
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -74,16 +78,19 @@ fun RegistroScreen(
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo",
-                modifier = Modifier.size(210.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .heightIn(max = 220.dp) //limite de altura
             )
 
             Spacer(modifier = Modifier.height(20.dp))
             Text("Regístrate para comenzar", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(20.dp))
+
             Text("1. Elige perfil")
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Usando el CardRol de tu compañera
+
             Row {
                 CardRol("Inquilino", rol == "Inquilino") { rol = "Inquilino" }
                 Spacer(modifier = Modifier.width(10.dp))
@@ -157,6 +164,16 @@ fun RegistroScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            TextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirmar Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                leadingIcon = { Icon(Icons.Default.Lock, null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
             // BOTÓN SIMPLIFICADO: Ahora solo llama al ViewModel
             Button(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E5A88)),
@@ -169,6 +186,7 @@ fun RegistroScreen(
                         email = email,
                         telefono = prefijoLimpio + telefono,
                         password = password,
+                        confirmPassword = confirmPassword,
                         rol = rol
                     )
                 }

@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Edit
@@ -44,6 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rentchecktfg2026.presentation.ui.utils.ResponsiveContainer
 
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
 
@@ -69,10 +72,12 @@ fun AltaPropiedad(
             )
         }
     ) { innerPadding ->
-        Column(
+        ResponsiveContainer {
+            Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp) ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -234,7 +239,10 @@ fun AltaPropiedad(
             }
         }
     }
+    }
 }
+
+
 @Preview
 @Composable
 fun previewAlta(){

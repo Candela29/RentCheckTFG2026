@@ -43,8 +43,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.utils.ResponsiveContainer
 import com.example.rentchecktfg2026.presentation.viewmodels.InquilinoPerfilViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,11 +59,11 @@ fun InquilinoPerfil(
 
     //Selectores de archivos
     val launcherDni= rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri->
-        uri?.let { inquilinoPerfilViewModel.subirDocumento(it, esDni = true) }
+        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
     }
 
     val launcherNomina = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { inquilinoPerfilViewModel.subirDocumento(it, esDni = false) }
+        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = false) }
     }
     val azul= Color(0xFF2D63ED)
     val celeste = Color(0xFFE3EDFF)
@@ -78,6 +78,7 @@ fun InquilinoPerfil(
             )
         }
     ){ innerPadding->
+        ResponsiveContainer{
         Column(modifier = Modifier.padding(innerPadding)
             .fillMaxSize()
             .padding(24.dp),
@@ -189,6 +190,7 @@ fun InquilinoPerfil(
 
         }
     }
+}
 }
 @Composable
 fun DocumentCard(titulo:String, subido:Boolean, onClick:()->Unit ) {

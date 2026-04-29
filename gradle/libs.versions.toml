@@ -11,6 +11,8 @@ composeBom = "2024.09.00"
 runtimeLivedata = "1.10.6"
 googleGmsGoogleServices = "4.4.4"
 firebaseFirestore = "26.2.0"
+foundationLayout = "1.11.0"
+foundation = "1.11.0"
 
 [libraries]
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.0.0" }
@@ -32,6 +34,8 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
