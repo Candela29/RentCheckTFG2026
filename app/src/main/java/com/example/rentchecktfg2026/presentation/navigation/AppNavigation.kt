@@ -46,7 +46,7 @@ fun AppNavigation(){
             CandidatosAct()
         }*/
         composable (Screen.MenuInmobiliaria.route ){
-            MenuInmobiliaria()
+            MenuInmobiliaria(navController)
         }
 
 

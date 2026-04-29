@@ -36,11 +36,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuInmobiliaria() {
+fun MenuInmobiliaria(navController: NavController) {
     val azulOscuro = Color(0xFF1A45A0) // Un azul más profundo para el texto
     val azulFondoCard = Color(0xFFE8EFFF) // Un azul muy suave para el fondo de la card
     val azulIcono = Color(0xFF2D63ED) // Tu azul original para los iconos
@@ -53,7 +55,9 @@ fun MenuInmobiliaria() {
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
+
                 },
+
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = azulIcono)
 
             )
@@ -64,12 +68,12 @@ fun MenuInmobiliaria() {
             modifier = Modifier.fillMaxSize().padding(innerPadding).padding(24.dp),
 
             ) {
-
             Text(
                 text = "Selecciona una acción para continuar",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray
             )
+
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -171,5 +175,5 @@ fun MenuInmobiliaria() {
 @Composable
 @Preview
 fun PreviewMenuInmobiliaria(){
-    MenuInmobiliaria()
+    MenuInmobiliaria(rememberNavController())
 }

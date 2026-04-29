@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -13,9 +14,11 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,12 +55,16 @@ fun RegistroScreen(
     val prefijos = listOf("+34 🇪🇸", "+504 🇭🇳", "+52 🇲🇽", "+54 🇦🇷", "+1 🇺🇸")
     var prefijoSeleccionado by remember { mutableStateOf(prefijos[0]) }
 
+    val azul = Color(0xFF2D63ED)
     // Navegación automática cuando el registro es exitoso
     LaunchedEffect(registroExitoso) {
         if (registroExitoso) {
-            navController.navigate(Screen.Login.route) {
-                popUpTo(Screen.Registro.route) { inclusive = true }
+            val rutaDestino =if (rol=="Inmobiliaria"){
+                Screen.MenuInmobiliaria.route
+            }else{
+                Screen.PerfilInquilino.route
             }
+
         }
     }
 
@@ -74,7 +81,7 @@ fun RegistroScreen(
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo",
-                modifier = Modifier.size(210.dp)
+                modifier = Modifier.size(150.dp)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -84,34 +91,43 @@ fun RegistroScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Usando el CardRol de tu compañera
-            Row {
+            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+
                 CardRol("Inquilino", rol == "Inquilino") { rol = "Inquilino" }
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(12.dp))
                 CardRol("Inmobiliaria", rol == "Inmobiliaria") { rol = "Inmobiliaria" }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
-
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = "Paso 2: Datos personales",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             // Campos de texto comunes
-            TextField(
+            OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
                 label = { Text("Nombre") },
-                leadingIcon = { Icon(Icons.Default.Person, null) },
-                modifier = Modifier.fillMaxWidth()
+                leadingIcon = { Icon(Icons.Default.Person, null, tint = azul) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            TextField(
+            OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                leadingIcon = { Icon(Icons.Default.Email, null) },
-                modifier = Modifier.fillMaxWidth()
+                leadingIcon = { Icon(Icons.Default.Email, null,tint=azul) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Teléfono con prefijo
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -122,7 +138,7 @@ fun RegistroScreen(
                             .clickable { expanded = true }
                             .padding(horizontal = 12.dp, vertical = 16.dp)
                     ) {
-                        Icon(Icons.Default.Phone, null)
+                        Icon(Icons.Default.Phone, null,tint=azul)
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(prefijoSeleccionado)
                     }
@@ -136,32 +152,35 @@ fun RegistroScreen(
                     }
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                TextField(
+                OutlinedTextField(
                     value = telefono,
                     onValueChange = { input -> telefono = input.filter { it.isDigit() } },
                     label = { Text("Teléfono") },
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(
+            OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 leadingIcon = { Icon(Icons.Default.Lock, null) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // BOTÓN SIMPLIFICADO: Ahora solo llama al ViewModel
             Button(
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E5A88)),
+                colors = ButtonDefaults.buttonColors(containerColor = azul),
                 enabled = !loading,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp),
                 onClick = {
                     val prefijoLimpio = prefijoSeleccionado.split(" ")[0]
                     registroViewModel.registrarUsuario(
@@ -176,7 +195,7 @@ fun RegistroScreen(
                 if (loading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("Crear cuenta")
+                    Text("CREAR CUENTA")
                 }
             }
 
