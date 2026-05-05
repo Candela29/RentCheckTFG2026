@@ -226,6 +226,23 @@ fun RegistroScreen(
             if (mensaje.isNotEmpty()) {
                 Text(text = mensaje, color = Color.Red)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "¿Ya tienes cuenta?", color = Color.Gray)
+                TextButton(onClick = { navController.popBackStack() }) {
+                    Text(
+                        text = "Inicia sesión",
+                        color = azul,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }

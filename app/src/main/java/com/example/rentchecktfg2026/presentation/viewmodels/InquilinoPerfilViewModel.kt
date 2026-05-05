@@ -6,7 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 
 
 class InquilinoPerfilViewModel(
-    private val repository: UserRepository= UserRepository()
+    private val repository: UserRepositoryImpl= UserRepositoryImpl(FirebaseFirestore.getInstance())
 
 ) : ViewModel() {
     private val auth = FirebaseAuth.getInstance()

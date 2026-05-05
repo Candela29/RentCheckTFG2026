@@ -17,6 +17,8 @@ sealed class Screen(val route:String){
     object CandidatosAct: Screen("Candidatos")
     object MenuInmobiliaria:Screen ("Menú inmobiliaria")
 
+    object ListaInmubeles :Screen(" Lista Inmuebles")
+
 
 
 }

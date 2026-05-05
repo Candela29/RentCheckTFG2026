@@ -1,13 +1,14 @@
 package com.example.rentchecktfg2026.data.repositories
 
 import android.net.Uri
+import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.domain.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
-class UserRepositoryImpl(){
+class UserRepositoryImpl(instance: FirebaseFirestore) {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
@@ -104,6 +105,15 @@ class UserRepositoryImpl(){
                 .toObjects(User::class.java)
         }catch (e: Exception){
             emptyList()
+        }
+    }
+
+    suspend fun saveProperty (property: Property) : Result<Unit>{
+        return try{
+            firestore.collection("propiedades").add(property).await()
+            Result.success(Unit)
+        }catch (e: Exception){
+            Result.failure(e)
         }
     }
 

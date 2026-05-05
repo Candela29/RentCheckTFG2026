@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.User
-import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class CandidatosViewModel(
-    private val repository: UserRepository= UserRepository(),
+    private val repository: UserRepositoryImpl= UserRepositoryImpl(FirebaseFirestore.getInstance()),
     private val isPreview: Boolean=false
 ) : ViewModel() {
     private val _candidatos = MutableLiveData<List<User>>()
