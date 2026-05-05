@@ -1,4 +1,4 @@
-package com.example.rentchecktfg2026.domain.repositories
+package com.example.rentchecktfg2026.data.repositories
 
 import android.net.Uri
 import com.example.rentchecktfg2026.domain.model.User
@@ -7,11 +7,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
-class UserRepository(
-        private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
-        private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
-        private val storage: FirebaseStorage = FirebaseStorage.getInstance()){
-
+class UserRepositoryImpl(){
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
     private val usersCollection=firestore.collection("users")
 
 
@@ -62,7 +61,7 @@ class UserRepository(
     /**
      * Sube un archivo (DNI o Nómina) a Firebase Storage y devuelve la URL de descarga
      */
-    suspend fun subirDocumento(uri: Uri,tipoDocumento: String): String? {
+    suspend fun subirDocumento(uri: Uri, tipoDocumento: String): String? {
         val uid=auth.currentUser?.uid?:return null
         // El nombre será "dni.pdf" o "nomina.pdf"
         val nombreArchivo="$tipoDocumento.pdf"
@@ -91,6 +90,8 @@ class UserRepository(
             false
         }
     }
+
+    //
     /**
      * Obtiene todos los usuarios con rol "Inquilino" (Para la vista de la Inmobiliaria)
      */

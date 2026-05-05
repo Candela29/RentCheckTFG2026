@@ -2,19 +2,17 @@ package com.example.rentchecktfg2026.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rentchecktfg2026.domain.model.User
-import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel: ViewModel() {
     // Estado para el usuario
     private val auth = FirebaseAuth.getInstance()
-    private val userRepository= UserRepository(FirebaseFirestore.getInstance())
+    private val userRepository= UserRepositoryImpl(FirebaseFirestore.getInstance())
     private val _username = MutableStateFlow("")
     val username = _username.asStateFlow()
 
