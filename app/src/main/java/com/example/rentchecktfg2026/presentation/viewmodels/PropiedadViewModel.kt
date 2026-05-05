@@ -14,8 +14,9 @@ import kotlinx.coroutines.launch
 
 
 class PropiedadViewModel (
-    private val repository: UserRepositoryImpl
+    private val repository: UserRepositoryImpl = UserRepositoryImpl()
 ): ViewModel() {
+
 
     private  val _titulo= MutableStateFlow("")
     val titulo: StateFlow<String> = _titulo.asStateFlow()

@@ -34,7 +34,7 @@ fun AppNavigation(){
         }
 
         composable (Screen.AltaPropiedad.route){
-            AltaPropiedad(navController)
+            AltaPropiedad(navController=navController)
         }
         composable (Screen.Login.route) {
             Login(navController)
@@ -50,7 +50,7 @@ fun AppNavigation(){
             MenuInmobiliaria(navController)
         }
         composable (Screen.ListaInmubeles.route ){
-            ListaPropiedades(navController)
+            ListaPropiedades(navController=navController)
         }
 
 

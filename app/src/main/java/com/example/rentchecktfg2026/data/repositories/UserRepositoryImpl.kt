@@ -8,8 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
-class UserRepositoryImpl(instance: FirebaseFirestore) {
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+class UserRepositoryImpl( private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()) {
+
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
     private val usersCollection=firestore.collection("users")

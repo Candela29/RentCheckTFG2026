@@ -222,10 +222,10 @@ fun AltaPropiedad(
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleAmueblado(!estaAmueblado) }
+                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleGaraje(!tieneGaraje) }
                     ) {
                         Checkbox(
-                            checked = estaAmueblado,
+                            checked = tieneGaraje,
                             onCheckedChange = { propiedadViewModel.toggleGaraje(it) },
                             colors = CheckboxDefaults.colors(checkedColor = azul)
                         )
