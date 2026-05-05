@@ -39,7 +39,7 @@ fun MenuDeAcciones(navController: NavController){
                 DropdownMenuItem(
                     text = { Text("Perfil") },
                     onClick = {
-                        // Acción 1
+
                         expanded = false
                         navController.navigate(Screen.PerfilInquilino.route)
                     }
@@ -47,9 +47,17 @@ fun MenuDeAcciones(navController: NavController){
                 DropdownMenuItem(
                     text = { Text("Login") },
                     onClick = {
-                        // Acción 1
+
                         expanded = false
                         navController.navigate(Screen.Login.route)
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Atrás") },
+                    onClick = {
+
+                        expanded = false
+                        navController.popBackStack()
                     }
                 )
             }

@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -56,13 +59,19 @@ fun RegistroScreen(
     var prefijoSeleccionado by remember { mutableStateOf(prefijos[0]) }
 
     val azul = Color(0xFF2D63ED)
+
     // Navegación automática cuando el registro es exitoso
     LaunchedEffect(registroExitoso) {
         if (registroExitoso) {
-            val rutaDestino =if (rol=="Inmobiliaria"){
+            registroViewModel.resetEstado()
+            val rutaDestino =if (rol.equals("INMOBILIARIA", ignoreCase = true)){
                 Screen.MenuInmobiliaria.route
             }else{
                 Screen.PerfilInquilino.route
+            }
+            navController.navigate(rutaDestino){
+                //Evita que el usuario vuelva al registro si le da a atrás
+                popUpTo(Screen.Registro.route) { inclusive = true }
             }
 
         }
@@ -73,7 +82,8 @@ fun RegistroScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(20.dp),
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(30.dp))
@@ -81,29 +91,38 @@ fun RegistroScreen(
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo",
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier.size(200.dp)
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Text("Regístrate para comenzar", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(20.dp))
-            Text("1. Elige perfil")
-            Spacer(modifier = Modifier.height(10.dp))
+            Text("1. Elige perfil",
+                style= MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color= Color.Gray)
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Usando el CardRol de tu compañera
-            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                Box(modifier = Modifier.weight(1f)) {
+                    CardRol("Inquilino", rol == "INQUILINO") { rol = "INQUILINO" }
 
-                CardRol("Inquilino", rol == "Inquilino") { rol = "Inquilino" }
-                Spacer(modifier = Modifier.width(12.dp))
-                CardRol("Inmobiliaria", rol == "Inmobiliaria") { rol = "Inmobiliaria" }
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    CardRol("Inmobiliaria", rol == "INMOBILIARIA") { rol = "INMOBILIARIA" }
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = "Paso 2: Datos personales",
+                text = "2: Datos personales",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
+                modifier = Modifier.align(Alignment.Start),
+                color= Color.Gray
             )
             Spacer(modifier = Modifier.height(16.dp))
             // Campos de texto comunes
@@ -181,6 +200,7 @@ fun RegistroScreen(
                 enabled = !loading,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
                 onClick = {
                     val prefijoLimpio = prefijoSeleccionado.split(" ")[0]
                     registroViewModel.registrarUsuario(
@@ -195,7 +215,8 @@ fun RegistroScreen(
                 if (loading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("CREAR CUENTA")
+                    Text("CREAR CUENTA",
+                        fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -208,7 +229,6 @@ fun RegistroScreen(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

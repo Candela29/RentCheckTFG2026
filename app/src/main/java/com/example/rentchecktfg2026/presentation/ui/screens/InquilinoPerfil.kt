@@ -43,6 +43,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.viewmodels.InquilinoPerfilViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -56,7 +57,7 @@ fun InquilinoPerfil(
     val email by inquilinoPerfilViewModel.email.collectAsState()
     val dniSubido by inquilinoPerfilViewModel.dniSubido.collectAsState()
     val nominaSubida by inquilinoPerfilViewModel.nominaSubida.collectAsState()
-
+    val telefono by inquilinoPerfilViewModel.telefono.collectAsState()
     //Selectores de archivos
     val launcherDni= rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri->
         uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
@@ -70,6 +71,7 @@ fun InquilinoPerfil(
 
     Scaffold (
         topBar = {
+            MenuDeAcciones(navController)
             TopAppBar(
                 title={Text("Mi perfil de Inquilino", fontWeight = FontWeight.Bold ,color=Color.White)},
                 colors= TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -100,11 +102,11 @@ fun InquilinoPerfil(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = if(nombre.isEmpty()) "Nombre del Inquilino" else nombre,
+            Text(text = nombre,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
 
-            Text(text = if(email.isEmpty()) "usuario@ejemplo.com" else email,
+            Text(text = email,
                 color = Color.Gray)
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -123,16 +125,11 @@ fun InquilinoPerfil(
                 shape = RoundedCornerShape(12.dp)
             ){
                 Column(modifier=Modifier.padding(16.dp)) {
-                    Row(modifier=Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween){
-                        Text("Ubicación:", color = Color.Gray)
-                        Text("Madrid, España", fontWeight = FontWeight.Medium)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Teléfono:", color = Color.Gray)
-                        Text("666666666", fontWeight = FontWeight.Medium)
+                        Text(text=telefono, fontWeight = FontWeight.Medium)
                     }
                 }
             }

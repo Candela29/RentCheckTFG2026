@@ -79,7 +79,7 @@ fun MenuInmobiliaria(navController: NavController) {
 
             // Card 1: SUBIR PROPIEDAD
             Card(
-                onClick = { },
+                onClick = { navController.navigate(Screen.AltaPropiedad.route)},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp), // Aumentamos la altura para que sea más grande
@@ -127,7 +127,7 @@ fun MenuInmobiliaria(navController: NavController) {
 
             // Card 2: VER CANDIDATOS
             Card(
-                onClick = {  },
+                onClick = { navController.navigate(Screen.CandidatosAct.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp), // Misma altura grande
