@@ -1,6 +1,7 @@
 package com.example.rentchecktfg2026.data.repositories
 
 import android.net.Uri
+import android.util.Log
 import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.domain.model.User
 import com.google.firebase.auth.FirebaseAuth
@@ -63,19 +64,34 @@ class UserRepositoryImpl( private val firestore: FirebaseFirestore = FirebaseFir
      * Sube un archivo (DNI o Nómina) a Firebase Storage y devuelve la URL de descarga
      */
     suspend fun subirDocumento(uri: Uri, tipoDocumento: String): String? {
-        val uid=auth.currentUser?.uid?:return null
+        val uid=auth.currentUser?.uid
+
+        Log.d("STORAGE", "UID: $uid")
+        Log.d("STORAGE", "URI: $uri")
+
+        if (uid == null) {
+            Log.e("STORAGE", "❌ No hay usuario autenticado")
+            return null
+        }
+
         // El nombre será "dni.pdf" o "nomina.pdf"
         val nombreArchivo="$tipoDocumento.pdf"
         // La ruta queda más limpia: documentos/ID_USUARIO/dni.pdf
         val referencia =storage.reference.child("documentos/$uid/$nombreArchivo")
+        Log.d("STORAGE", "Ruta Storage: documentos/$uid/$nombreArchivo")
+
 
         return try{
             // Intentamos subir el archivo (putFile)
             referencia.putFile(uri).await()
+            Log.d("STORAGE", "✅ Archivo subido correctamente")
             // Si todo va bien, pedimos la URL pública (downloadUrl)
-            referencia.downloadUrl.await().toString()
+            val url =  referencia.downloadUrl.await().toString()
+            Log.d("STORAGE", "✅ URL: $url")
+            url
         }catch (e:Exception){
-            e.printStackTrace()
+            Log.e("STORAGE", "❌ Error: ${e.message}")
+            Log.e("STORAGE", "❌ Causa: ${e.cause}")
             null
         }
     }

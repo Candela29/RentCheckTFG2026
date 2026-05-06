@@ -41,6 +41,9 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
@@ -58,26 +61,27 @@ fun InquilinoPerfil(
     val dniSubido by inquilinoPerfilViewModel.dniSubido.collectAsState()
     val nominaSubida by inquilinoPerfilViewModel.nominaSubida.collectAsState()
     val telefono by inquilinoPerfilViewModel.telefono.collectAsState()
+
+    var pdfSeleccionado by remember { mutableStateOf("Ningún archivo seleccionado") }
+
     //Selectores de archivos
+
     val launcherDni= rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri->
-        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
+        uri?.let {pdfSeleccionado = "DNI seleccionado"
+            inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
     }
 
     val launcherNomina = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = false) }
+        uri?.let {
+            pdfSeleccionado = "Nómina seleccionada"
+            inquilinoPerfilViewModel.subidaDocumento(it, esDni = false) }
     }
     val azul= Color(0xFF2D63ED)
     val celeste = Color(0xFFE3EDFF)
 
     Scaffold (
         topBar = {
-            MenuDeAcciones(navController)
-            TopAppBar(
-                title={Text("Mi perfil de Inquilino", fontWeight = FontWeight.Bold ,color=Color.White)},
-                colors= TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = azul
-                )
-            )
+            MenuDeAcciones(navController=navController, titulo = "Perfil de Inquilino", rol= "INQUILINO")
         }
     ){ innerPadding->
         Column(modifier = Modifier.padding(innerPadding)

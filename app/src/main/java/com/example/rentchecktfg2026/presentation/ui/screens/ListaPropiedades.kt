@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,11 +27,13 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rentchecktfg2026.domain.model.Property
+import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
 
 @Composable
@@ -35,13 +41,27 @@ fun ListaPropiedades (propiedadViewModel: PropiedadViewModel= viewModel(),
                       navController: NavController){
 
     val propiedades by propiedadViewModel.listaPropiedades.collectAsState()
-
+    val azul = Color(0xFF2D63ED)
     //cargamos los datos
     LaunchedEffect(Unit) {
         propiedadViewModel.cargarMisPropiedades()
     }
 
-    Scaffold {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {navController.navigate(Screen.AltaPropiedad.route)},
+                containerColor = azul
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Añadir Propiedad",
+                    tint = Color.White
+                )
+            }
+        }
+    ) {
+
         innerPadding->
         Column(modifier = Modifier.padding(innerPadding).padding(16.dp)) {
             Text("Mis anuncios",

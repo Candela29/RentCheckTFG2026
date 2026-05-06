@@ -42,6 +42,10 @@ class PropiedadViewModel (
 
     private val _listaPropiedades = MutableStateFlow<List<Property>>(emptyList())
     val listaPropiedades: StateFlow<List<Property>> = _listaPropiedades
+
+    private val _userRole = MutableStateFlow("inmobiliaria")
+    val userRole: StateFlow<String> = _userRole.asStateFlow()
+
     fun setTitulo(valor: String) { _titulo.value = valor }
     fun setPrecio(valor: String) { _precio.value = valor }
     fun setHabitaciones(valor: String) { _habitaciones.value = valor }

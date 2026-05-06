@@ -78,11 +78,8 @@ fun AltaPropiedad(
 
     Scaffold(
         topBar = {
-            MenuDeAcciones(navController)
-            TopAppBar(
-                title = { Text("Nueva Propiedad", fontWeight = FontWeight.Bold, color = Color.White) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = azul)
-            )
+            MenuDeAcciones(navController=navController,titulo="Nueva Propiedad",rol="INMOBILIARIA")
+
         }
     ) { innerPadding ->
         Column(

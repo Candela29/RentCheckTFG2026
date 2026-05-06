@@ -1,6 +1,7 @@
 package com.example.rentchecktfg2026.presentation.viewmodels
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,29 +48,37 @@ class InquilinoPerfilViewModel(
         cargarDatosUsuario()
     }
     fun subidaDocumento(uri: Uri, esDni: Boolean) {
-        // Aquí en el futuro conectarás con Firebase Storage
-        val uid= FirebaseAuth.getInstance().currentUser?.uid ?:return
-        val tipo =if(esDni)"dni" else "nomina"
-        val campoFirestore= if (esDni) "dniUrl" else "nominaUrl"
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        Log.d("SUBIDA", "UID: $uid")
+        Log.d("SUBIDA", "URI: $uri")
+
+        if (uid == null) {
+            Log.e("SUBIDA", "❌ No hay usuario logueado")
+            return
+        }
+
+        val tipo = if (esDni) "dni" else "nomina"
+        val campoFirestore = if (esDni) "dniUrl" else "nominaUrl"
+
         viewModelScope.launch {
-            //Subir a Storage
-            val urlDescarga = repository.subirDocumento(uri,tipo)
+            Log.d("SUBIDA", "Subiendo a Storage: $tipo")
+            val urlDescarga = repository.subirDocumento(uri, tipo)
+            Log.d("SUBIDA", "URL obtenida: $urlDescarga")
 
             if (urlDescarga != null) {
-
-                // PASO B: Guardamos esa URL en la ficha de Firestore del usuario
-                // ¡Aquí es donde usas el otro método!
                 val exito = repository.updateDocumentUrl(
                     id = uid,
                     campo = campoFirestore,
                     url = urlDescarga
                 )
-                if(exito){
-                    if(esDni) _dniSubido.value= true else _nominaSubida.value= true
+                Log.d("SUBIDA", "Guardado en Firestore: $exito")
+                if (exito) {
+                    if (esDni) _dniSubido.value = true else _nominaSubida.value = true
                 }
+            } else {
+                Log.e("SUBIDA", "❌ urlDescarga es null - falló el Storage")
             }
         }
-
     }
 
     // Funciones por si quieres rellenar los datos desde otra pantalla
