@@ -1,5 +1,6 @@
 package com.example.rentchecktfg2026.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
@@ -18,7 +19,7 @@ class PropiedadViewModel (
 ): ViewModel() {
 
 
-    private  val _titulo= MutableStateFlow("")
+    private val _titulo = MutableStateFlow("")
     val titulo: StateFlow<String> = _titulo.asStateFlow()
 
 
@@ -26,16 +27,16 @@ class PropiedadViewModel (
     val precio: StateFlow<String> = _precio.asStateFlow()
 
     private val _habitaciones = MutableStateFlow("")
-    val habitaciones : StateFlow<String> = _habitaciones.asStateFlow()
+    val habitaciones: StateFlow<String> = _habitaciones.asStateFlow()
 
-    private val _tieneAscensor= MutableStateFlow(false)
+    private val _tieneAscensor = MutableStateFlow(false)
     val tieneAscensor: StateFlow<Boolean> = _tieneAscensor.asStateFlow()
 
     private val _estaAmueblado = MutableStateFlow(false)
     val estaAmueblado: StateFlow<Boolean> = _estaAmueblado.asStateFlow()
 
-    private val _tieneGaraje= MutableStateFlow(false)
-    val tieneGaraje : StateFlow<Boolean> = _tieneGaraje.asStateFlow()
+    private val _tieneGaraje = MutableStateFlow(false)
+    val tieneGaraje: StateFlow<Boolean> = _tieneGaraje.asStateFlow()
 
     private val _tipovivienda = MutableStateFlow("Medio")
     val tipoVivienda: StateFlow<String> = _tipovivienda
@@ -46,11 +47,22 @@ class PropiedadViewModel (
     private val _userRole = MutableStateFlow("inmobiliaria")
     val userRole: StateFlow<String> = _userRole.asStateFlow()
 
-    fun setTitulo(valor: String) { _titulo.value = valor }
-    fun setPrecio(valor: String) { _precio.value = valor }
-    fun setHabitaciones(valor: String) { _habitaciones.value = valor }
+    fun setTitulo(valor: String) {
+        _titulo.value = valor
+    }
 
-    fun setTipoVivienda (valor:String){_tipovivienda.value = valor}
+    fun setPrecio(valor: String) {
+        _precio.value = valor
+    }
+
+    fun setHabitaciones(valor: String) {
+        _habitaciones.value = valor
+    }
+
+    fun setTipoVivienda(valor: String) {
+        _tipovivienda.value = valor
+    }
+
     fun toggleAscensor(valor: Boolean) {
         _tieneAscensor.value = valor
     }
@@ -59,37 +71,53 @@ class PropiedadViewModel (
         _estaAmueblado.value = valor
     }
 
-    fun toggleGaraje(valor: Boolean){
-        _tieneGaraje.value= valor
+    fun toggleGaraje(valor: Boolean) {
+        _tieneGaraje.value = valor
+    }
+
+    init {
+        cargarMisPropiedades()
     }
     fun registrarPropiedad(onSuccess: () -> Unit) {
-        val nuevaPropiedad= Property(
-            title = _titulo.value,
-            price= _precio.value.toDoubleOrNull() ?: 0.0,
-            rooms = _habitaciones.value.toIntOrNull() ?:0,
-            hasElevator = _tieneAscensor.value,
-            isFurnished = _estaAmueblado.value,
-            hasGarage = _tieneGaraje.value,
-            propertyType = _tipovivienda.value
-        )
+        if (titulo.value.isEmpty() || precio.value.isEmpty()) return
         viewModelScope.launch {
-            val resultado = repository.saveProperty(nuevaPropiedad)
-            if (resultado.isSuccess) {
-                onSuccess() // Ejecuta la navegación atrás solo si se guardó bien
+            try {
+                //Crear el objeto con los datos actuales
+                val nuevaPropiedad = Property(
+                    title = titulo.value,
+                    price = precio.value.toDoubleOrNull() ?: 0.0, // Property usa Double
+                    rooms = habitaciones.value.toIntOrNull() ?: 0,
+                    hasElevator = tieneAscensor.value,
+                    isFurnished = estaAmueblado.value,
+                    hasGarage = tieneGaraje.value,
+                    propertyType = tipoVivienda.value
+                )
+
+                //Llamar al repositorio para guardar en Firestore
+                val resultado = repository.saveProperty(nuevaPropiedad)
+
+                if (resultado.isSuccess) {
+
+                    // Ejecutamos la navegación hacia atrás solo si hubo éxito
+                    onSuccess()
+                }
+            } catch (e: Exception) {
+                Log.e("ERROR_SAVE", "Error al registrar: ${e.message}")
             }
         }
     }
 
-    fun cargarMisPropiedades (){
-        val db = FirebaseFirestore.getInstance()
+        fun cargarMisPropiedades() {
+            val db = FirebaseFirestore.getInstance()
 
-        //Filtramos por el ID del dueño
-        db.collection("propiedades").addSnapshotListener { snapshot, _->
-            if(snapshot !=null){
-                val propiedades = snapshot.toObjects(Property::class.java)
-                _listaPropiedades.value = propiedades
+            //Filtramos por el ID del dueño
+            db.collection("propiedades").addSnapshotListener { snapshot, _ ->
+                if (snapshot != null) {
+                    val propiedades = snapshot.toObjects(Property::class.java)
+                    _listaPropiedades.value = propiedades
+                }
             }
-        }
 
+        }
     }
-}
+

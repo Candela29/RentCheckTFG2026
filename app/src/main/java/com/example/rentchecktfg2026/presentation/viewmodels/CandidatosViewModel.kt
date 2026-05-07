@@ -10,10 +10,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class CandidatosViewModel(
-    private val repository: UserRepositoryImpl= UserRepositoryImpl(FirebaseFirestore.getInstance()),
+    private val repository: UserRepositoryImpl= UserRepositoryImpl(),
     private val isPreview: Boolean=false
 ) : ViewModel() {
-    private val _candidatos = MutableLiveData<List<User>>()
+    private val _candidatos = MutableLiveData<List<User>>(emptyList())
     val candidatos: LiveData<List<User>> = _candidatos
 
 
@@ -25,15 +25,23 @@ class CandidatosViewModel(
     private fun obtenerCandidatosReales() {
         // 2. Usamos el modelo User con los nombres de campos nuevos
         viewModelScope.launch {
-            val lista = repository.obtenerInquilinos()
-            _candidatos.value = lista
+            try {
+                val lista = repository.obtenerInquilinos()
+                // Usamos postValue para asegurar que se actualiza en el hilo principal
+                _candidatos.postValue(lista)
+            } catch (e: Exception) {
+                _candidatos.postValue(emptyList())
+            }
         }
     }
 
 
 
-    // 3. Ojo aquí: cambiamos 'it.puntuacion' por 'it.scoring'
+
+
+
     fun filterTop() {
-        _candidatos.value = _candidatos.value?.filter {it.scoring  >= 70 }//Si el scoring es nulo, haz como si fuera un 0
+        val listaActual = _candidatos.value.orEmpty()
+        _candidatos.value = listaActual.filter { it.scoring >= 70 }
     }
 }

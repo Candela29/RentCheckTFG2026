@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.domain.model.User
@@ -45,7 +46,8 @@ import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 @Composable
 fun CandidatosAct(
     navController: NavController,
-    vm: CandidatosViewModel) {
+    vm: CandidatosViewModel= viewModel()
+ ) {
     val candidatos by vm.candidatos.observeAsState(emptyList())
     val azul= Color(0xFF2D63ED)
     val gris = Color(0xFFF7F9FC)
