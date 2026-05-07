@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
 
 @Composable
@@ -48,6 +49,11 @@ fun ListaPropiedades (propiedadViewModel: PropiedadViewModel= viewModel(),
     }
 
     Scaffold(
+
+        topBar = {
+            MenuDeAcciones(navController=navController, titulo = "Lista de Inmuebles", rol= "INMOBILIARIA")
+
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {navController.navigate(Screen.AltaPropiedad.route)},
