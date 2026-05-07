@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.domain.model.User
-import com.example.rentchecktfg2026.domain.repositories.UserRepository
 import kotlinx.coroutines.launch
 
 class CandidatosViewModel(
