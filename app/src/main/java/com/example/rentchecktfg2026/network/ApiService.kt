@@ -71,6 +71,11 @@ interface ApiService {
         @Query("status") status: String
     ): Response<Application>
 
+    @GET("api/applications/property/{propertyId}")
+    suspend fun getApplicationsByProperties(
+        @Path("propertyId") propertyId: Long
+    ): Response<List<Application>>
+
 
     // -- DOCUMENTOS --
     @Multipart
@@ -80,4 +85,9 @@ interface ApiService {
         @Part("type") type: RequestBody,
         @Part("userId") userId: RequestBody
     ): Response<Document>
+
+    @GET("api/documents/user/{userId}")
+    suspend fun getDocumentsByUser(
+        @Path("userId") userId: String
+    ): Response<List<Document>>
 }

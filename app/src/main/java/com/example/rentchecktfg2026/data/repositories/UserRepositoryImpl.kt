@@ -4,136 +4,82 @@ import android.net.Uri
 import android.util.Log
 import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.domain.model.User
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.network.ApiService
+import com.example.rentchecktfg2026.network.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
-class UserRepositoryImpl( private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()) {
+class UserRepositoryImpl(
+    private val api: ApiService = RetrofitClient.instance,
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) : UserRepository {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
-    private val usersCollection=firestore.collection("users")
-
-
-
-    //Busca el usuario y devuelve el objeto User con su rol
-    suspend fun getUserById(id:String): User?{
+    override suspend fun getUserById(id:String): Result<User> {
         return try{
-            val documentSnapshot= usersCollection.document(id).get().await()
-            documentSnapshot.toObject(User::class.java)
-        }catch(e: Exception){
-            null
+            val doc = firestore.collection("users").document(id).get().await()
+            val user = doc.toObject(User::class.java)
+            if(user != null) Result.success(user) else Result.failure(Exception("No existe"))
+        } catch(e: Exception){
+            Result.failure(e)
         }
     }
 
-    suspend fun saveUser(user: User): Boolean{
-        return try{
-            usersCollection.document(user.id).set(user).await()
-            true
-        }catch (e: Exception){
-            e.printStackTrace()
-            false
-        }
-    }
-
-    suspend fun updateScoring(id:String, score:Int): Boolean{
-        return try{
-            firestore.collection("users").document(id).update("scoring",score).await()
-            true
-        }catch (e: Exception){
-            e.printStackTrace()
-            false
-        }
-    }
-    /**
-     * Guarda el resultado del Scoring calculado
-     */
-    suspend fun guardarScoring(id:String, score: Int): Boolean{
-        return try{
-           firestore.collection("users").document(id)
-               .update("scoring",score)
-               .await()
-            true
-        }catch (e: Exception){
-            e.printStackTrace()
-            false
-        }
-    }
-    /**
-     * Sube un archivo (DNI o Nómina) a Firebase Storage y devuelve la URL de descarga
-     */
-    suspend fun subirDocumento(uri: Uri, tipoDocumento: String): String? {
-        val uid=auth.currentUser?.uid
-
-        Log.d("STORAGE", "UID: $uid")
-        Log.d("STORAGE", "URI: $uri")
-
-        if (uid == null) {
-            Log.e("STORAGE", "❌ No hay usuario autenticado")
-            return null
-        }
-
-        // El nombre será "dni.pdf" o "nomina.pdf"
-        val nombreArchivo="$tipoDocumento.pdf"
-        // La ruta queda más limpia: documentos/ID_USUARIO/dni.pdf
-        val referencia =storage.reference.child("documentos/$uid/$nombreArchivo")
-        Log.d("STORAGE", "Ruta Storage: documentos/$uid/$nombreArchivo")
-
-
-        return try{
-            // Intentamos subir el archivo (putFile)
-            referencia.putFile(uri).await()
-            Log.d("STORAGE", "✅ Archivo subido correctamente")
-            // Si todo va bien, pedimos la URL pública (downloadUrl)
-            val url =  referencia.downloadUrl.await().toString()
-            Log.d("STORAGE", "✅ URL: $url")
-            url
-        }catch (e:Exception){
-            Log.e("STORAGE", "❌ Error: ${e.message}")
-            Log.e("STORAGE", "❌ Causa: ${e.cause}")
-            null
-        }
-    }
-
-    // Este método es solo para actualizar la base de datos (Firestore)
-    suspend fun updateDocumentUrl(id: String, campo: String, url: String): Boolean {
+    override suspend fun syncUserWithApi(user: User): Result<User> {
         return try {
-            // Accedemos a la colección de usuarios, al documento por su ID y actualizamos un campo
-            firestore.collection("users").document(id).update(campo, url).await()
-            true
+            val response = api.syncUser(user)
+            if(response.isSuccessful && response.body() != null) Result.success(response.body()!!)
+            else Result.failure(Exception("Error de sincronización con MySQL"))
         } catch (e: Exception) {
-            e.printStackTrace()
-            false
+            Result.failure(e)
         }
     }
 
-    //
-    /**
-     * Obtiene todos los usuarios con rol "Inquilino" (Para la vista de la Inmobiliaria)
-     */
-    suspend fun obtenerInquilinos():List<User>{
+    override suspend fun saveUser(user: User): Result<Boolean> {
         return try{
-            firestore.collection("users")
-                .whereEqualTo("role","Inquilino")
-                .get()
-                .await()
-                .toObjects(User::class.java)
-        }catch (e: Exception){
-            emptyList()
-        }
-    }
-
-    suspend fun saveProperty (property: Property) : Result<Unit>{
-        return try{
-            firestore.collection("propiedades").add(property).await()
-            Result.success(Unit)
+            firestore.collection("users").document(user.id).set(user).await()
+            Result.success(true)
         }catch (e: Exception){
             Result.failure(e)
         }
     }
 
-    fun cerrarSesion(){
+    override suspend fun updateScoring(id:String, score:Int): Result<Boolean> {
+        return try{
+            firestore.collection("users").document(id).update("scoring",score).await()
+            Result.success(true)
+        }catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun obtenerInquilinos(): Result<List<User>> {
+        return try {
+            val snapshot = firestore.collection("users")
+                .whereEqualTo("role", "Inquilino")
+                .get().await()
+            Result.success(snapshot.toObjects(User::class.java))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun guardarScoring(id:String, score: Int): Boolean{
+        return try{
+            firestore.collection("users").document(id)
+                .update("scoring",score)
+                .await()
+            true
+        }catch (e: Exception){
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override fun cerrarSesion(){
         auth.signOut()
     }
 
