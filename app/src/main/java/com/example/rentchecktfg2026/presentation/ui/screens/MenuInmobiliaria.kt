@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -27,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -43,9 +46,9 @@ import com.example.rentchecktfg2026.presentation.navigation.Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuInmobiliaria(navController: NavController) {
-    val azulOscuro = Color(0xFF1A45A0) // Un azul más profundo para el texto
-    val azulFondoCard = Color(0xFFE8EFFF) // Un azul muy suave para el fondo de la card
-    val azulIcono = Color(0xFF2D63ED) // Tu azul original para los iconos
+    val azulOscuro = Color(0xFF1A45A0) // azul más profundo para el texto
+    val azulFondoCard = Color(0xFFE8EFFF) // azul muy suave para el fondo de la card
+    val azulIcono = Color(0xFF2D63ED) // azul original para los iconos
 
     Scaffold(
         topBar = {
@@ -55,9 +58,7 @@ fun MenuInmobiliaria(navController: NavController) {
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
-
                 },
-
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = azulIcono)
 
             )
@@ -68,18 +69,18 @@ fun MenuInmobiliaria(navController: NavController) {
             modifier = Modifier.fillMaxSize().padding(innerPadding).padding(24.dp),
 
             ) {
+
             Text(
                 text = "Selecciona una acción para continuar",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
-
 
             Spacer(modifier = Modifier.height(40.dp))
 
             // Card 1: SUBIR PROPIEDAD
             Card(
-                onClick = { },
+                onClick = {navController.navigate(Screen.AltaPropiedad.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp), // Aumentamos la altura para que sea más grande
@@ -127,7 +128,7 @@ fun MenuInmobiliaria(navController: NavController) {
 
             // Card 2: VER CANDIDATOS
             Card(
-                onClick = {  },
+                onClick = { navController.navigate(Screen.CandidatosAct.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp), // Misma altura grande
@@ -165,9 +166,57 @@ fun MenuInmobiliaria(navController: NavController) {
                                 color = azulOscuro.copy(alpha = 0.7f)
                             )
                         }
+
                     }
                 }
+
             }
+            Spacer(modifier = Modifier.height(20.dp))
+            Card(
+                onClick = { navController.navigate(Screen.ListaInmubeles.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp), // Misma altura grande
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = azulFondoCard),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        modifier = Modifier
+                            .padding(24.dp)
+                            .align(Alignment.CenterStart),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FormatListNumbered,
+                            contentDescription = null,
+                            tint = azulIcono,
+                            modifier = Modifier.padding(12.dp)
+                        )
+
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        Column {
+                            Text(
+                                text = "LISTA DE INMUEBLES",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = azulOscuro
+                            )
+                            Text(
+                                text = "Visualiza tus inmuebles",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = azulOscuro.copy( 0.7f)
+                            )
+                        }
+
+                    }
+                }
+
+            }
+
         }
     }
 }

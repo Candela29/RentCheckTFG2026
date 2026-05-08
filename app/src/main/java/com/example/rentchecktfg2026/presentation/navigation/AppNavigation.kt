@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.ui.screens.AltaPropiedad
 import com.example.rentchecktfg2026.presentation.ui.screens.CandidatosAct
 import com.example.rentchecktfg2026.presentation.ui.screens.InquilinoPerfil
+import com.example.rentchecktfg2026.presentation.ui.screens.ListaPropiedades
 import com.example.rentchecktfg2026.presentation.ui.screens.Login
 import com.example.rentchecktfg2026.presentation.ui.screens.MenuInmobiliaria
 import com.example.rentchecktfg2026.presentation.ui.screens.RegistroScreen
@@ -33,7 +34,7 @@ fun AppNavigation(){
         }
 
         composable (Screen.AltaPropiedad.route){
-            AltaPropiedad(navController)
+            AltaPropiedad(navController=navController)
         }
         composable (Screen.Login.route) {
             Login(navController)
@@ -42,11 +43,14 @@ fun AppNavigation(){
         composable (Screen.PerfilInquilino.route ){
             InquilinoPerfil(navController)
         }
-        /*composable (Screen.CandidatosAct.route ){
-            CandidatosAct()
-        }*/
+        composable (Screen.CandidatosAct.route ){
+            CandidatosAct(navController)
+        }
         composable (Screen.MenuInmobiliaria.route ){
             MenuInmobiliaria(navController)
+        }
+        composable (Screen.ListaInmubeles.route ){
+            ListaPropiedades(navController=navController)
         }
 
 

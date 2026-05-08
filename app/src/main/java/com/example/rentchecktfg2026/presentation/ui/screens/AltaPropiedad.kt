@@ -4,6 +4,7 @@ package com.example.rentchecktfg2026.presentation.ui.screens
 import android.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
@@ -25,6 +27,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +40,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +56,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
+import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,19 +66,20 @@ fun AltaPropiedad(
 ) {
     val titulo by propiedadViewModel.titulo.collectAsState()
     val precio by propiedadViewModel.precio.collectAsState()
-    val direccion by propiedadViewModel.direccion.collectAsState()
     val habitaciones by propiedadViewModel.habitaciones.collectAsState()
     val tieneAscensor by propiedadViewModel.tieneAscensor.collectAsState()
     val estaAmueblado by propiedadViewModel.estaAmueblado.collectAsState()
+    val tieneGaraje by propiedadViewModel.tieneGaraje.collectAsState()
+    val tipoVivienda by propiedadViewModel.tipoVivienda.collectAsState()
+
+    var expanded by remember{ mutableStateOf(false) }
+    val opcionesTipo = listOf("Bajo", "Piso Intermedio", "Ático")
     val azul = Color(0xFF2D63ED)
-    val celeste = Color(0xFFE3EDFF)
+
     Scaffold(
         topBar = {
-            MenuDeAcciones(navController)
-            TopAppBar(
-                title = { Text("Nueva Propiedad", fontWeight = FontWeight.Bold, color = Color.White) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = azul)
-            )
+            MenuDeAcciones(navController=navController,titulo="Nueva Propiedad",rol="INMOBILIARIA")
+
         }
     ) { innerPadding ->
         Column(
@@ -210,14 +219,65 @@ fun AltaPropiedad(
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleAmueblado(!estaAmueblado) }
+                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleGaraje(!tieneGaraje) }
                     ) {
                         Checkbox(
-                            checked = estaAmueblado,
-                            onCheckedChange = { propiedadViewModel.toggleAmueblado(it) },
+                            checked = tieneGaraje,
+                            onCheckedChange = { propiedadViewModel.toggleGaraje(it) },
                             colors = CheckboxDefaults.colors(checkedColor = azul)
                         )
                         Text(text = "Tiene garaje")
+                    }
+
+
+                }
+
+                Column(modifier = Modifier.fillMaxWidth().padding(top=16.dp)
+                ) {
+                    Text(
+                        text="Ubicación del inmueble",
+                        fontWeight = FontWeight.Bold,
+                        style=MaterialTheme.typography.titleMedium,
+                        color = Color.DarkGray
+                    )
+
+                    Spacer(modifier=Modifier.height(8.dp))
+
+                    Box(modifier= Modifier.fillMaxWidth()){
+                        Card(
+                            onClick = { expanded=true },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Row(modifier= Modifier.padding(16.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically){
+
+                                Text(text=if(tipoVivienda.isEmpty())"Selecciona tipo..." else tipoVivienda ,
+                                    color= if(tipoVivienda.isEmpty())Color.Gray else Color.Black)
+
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+
+                        DropdownMenu(
+                            expanded= expanded,
+                            onDismissRequest = {expanded =false},
+                            modifier= Modifier.fillMaxWidth()
+                        ) {
+                            opcionesTipo.forEach {
+                                opcion->
+                                DropdownMenuItem(
+                                    text={Text(opcion)},
+                                    onClick = {propiedadViewModel.setTipoVivienda(opcion)
+                                    expanded=false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -226,7 +286,9 @@ fun AltaPropiedad(
 
             // BOTÓN PUBLICAR
             Button(
-                onClick = { propiedadViewModel.registrarPropiedad() },
+                onClick = { propiedadViewModel.registrarPropiedad{
+                    navController.popBackStack()
+                } },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,9 +35,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.domain.model.User
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 
@@ -45,7 +48,8 @@ import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
 @Composable
 fun CandidatosAct(
     navController: NavController,
-    vm: CandidatosViewModel) {
+    vm: CandidatosViewModel= viewModel()
+ ) {
     val candidatos by vm.candidatos.observeAsState(emptyList())
     val azul= Color(0xFF2D63ED)
     val gris = Color(0xFFF7F9FC)
@@ -53,13 +57,9 @@ fun CandidatosAct(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Candidatos Rent-Check", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = azul,
-                    titleContentColor = Color.White
-                )
-            )
+            MenuDeAcciones(navController=navController, titulo = "Plantilla de Candidatos", rol= "INMOBILIARIA")
+
+
         },
         containerColor = gris
     ) { padding ->
