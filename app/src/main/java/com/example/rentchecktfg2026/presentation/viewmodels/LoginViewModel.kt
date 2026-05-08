@@ -3,16 +3,21 @@ package com.example.rentchecktfg2026.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel(
+    private val repository: UserRepository
+): ViewModel(
+
+) {
     // Estado para el usuario
     private val auth = FirebaseAuth.getInstance()
-    private val userRepository= UserRepositoryImpl(FirebaseFirestore.getInstance())
+    private val userRepository= UserRepositoryImpl()
     private val _username = MutableStateFlow("")
     val username = _username.asStateFlow()
 
@@ -60,8 +65,8 @@ class LoginViewModel: ViewModel() {
                 val uid = result.user?.uid
                 if (uid != null) {
                     viewModelScope.launch {
-                        val user = userRepository.getUserById(uid)
-
+                        val res = userRepository.getUserById(uid)
+                        val user = res.getOrNull()
                         if (user != null) {
                             // Aquí llega el "INQUILINO" o "INMOBILIARIA" de tu Firestore
                             _roleResult.value = user.role

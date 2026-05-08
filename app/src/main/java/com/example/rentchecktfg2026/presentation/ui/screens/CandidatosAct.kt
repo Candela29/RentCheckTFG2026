@@ -42,13 +42,14 @@ import com.example.rentchecktfg2026.domain.model.User
 import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CandidatosAct(
     navController: NavController,
-    vm: CandidatosViewModel= viewModel()
+    vm: CandidatosViewModel= koinViewModel()
  ) {
     val candidatos by vm.candidatos.observeAsState(emptyList())
     val azul= Color(0xFF2D63ED)

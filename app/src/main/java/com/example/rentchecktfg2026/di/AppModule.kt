@@ -21,12 +21,23 @@ import com.example.rentchecktfg2026.domain.usecase.SyncUserUseCase
 import com.example.rentchecktfg2026.domain.usecase.UpdateApplicationStatusUseCase
 import com.example.rentchecktfg2026.domain.usecase.UploadDocumentUseCase
 import com.example.rentchecktfg2026.network.RetrofitClient
+import com.example.rentchecktfg2026.presentation.viewmodels.CandidatosViewModel
+import com.example.rentchecktfg2026.presentation.viewmodels.InquilinoPerfilViewModel
+import com.example.rentchecktfg2026.presentation.viewmodels.LoginViewModel
+import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
+import com.example.rentchecktfg2026.presentation.viewmodels.RegistroViewModel
+import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
 
     single { RetrofitClient.instance }
+    single { FirebaseFirestore.getInstance() }
+    single { FirebaseAuth.getInstance() }
 
     single<UserRepository>{ UserRepositoryImpl(get()) }
     single<PropertyRepository>{ PropertyRepositoryImpl(get()) }
@@ -44,4 +55,12 @@ val appModule = module {
     factory { SyncUserUseCase(get()) }
     factory { UpdateApplicationStatusUseCase(get()) }
     factory { UploadDocumentUseCase(get()) }
+
+    viewModel { LoginViewModel(get()) }
+    viewModel { RegistroViewModel(get()) }
+    viewModel { CandidatosViewModel(get()) }
+    viewModel { PropiedadViewModel(get()) }
+    viewModel { ScoringViewModel(get()) }
+    viewModel { InquilinoPerfilViewModel(get(), get()) }
+
 }

@@ -49,11 +49,12 @@ import com.example.rentchecktfg2026.presentation.viewmodels.LoginViewModel
 import com.example.rentchecktfg2026.R
 import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.ui.theme.RentCheckTFG2026Theme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Login(
     navController: NavController,
-    loginViewModel: LoginViewModel= viewModel()
+    loginViewModel: LoginViewModel= koinViewModel()
 ){
     val username by loginViewModel.username.collectAsState()
     val password by loginViewModel.password.collectAsState()

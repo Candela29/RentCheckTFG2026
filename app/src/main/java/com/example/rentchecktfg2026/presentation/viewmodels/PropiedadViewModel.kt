@@ -3,6 +3,7 @@ package com.example.rentchecktfg2026.presentation.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rentchecktfg2026.data.repositories.PropertyRepositoryImpl
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.domain.repositories.PropertyRepository
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 
 
 class PropiedadViewModel (
-    private val repository: UserRepositoryImpl = UserRepositoryImpl()
+    private val repository: PropertyRepository
 ): ViewModel() {
 
 
@@ -94,7 +95,7 @@ class PropiedadViewModel (
                 )
 
                 //Llamar al repositorio para guardar en Firestore
-                val resultado = repository.saveProperty(nuevaPropiedad)
+                val resultado = repository.createProperty(nuevaPropiedad)
 
                 if (resultado.isSuccess) {
 
@@ -108,14 +109,10 @@ class PropiedadViewModel (
     }
 
         fun cargarMisPropiedades() {
-            val db = FirebaseFirestore.getInstance()
-
-            //Filtramos por el ID del dueño
-            db.collection("propiedades").addSnapshotListener { snapshot, _ ->
-                if (snapshot != null) {
-                    val propiedades = snapshot.toObjects(Property::class.java)
-                    _listaPropiedades.value = propiedades
-                }
+            viewModelScope.launch {
+                // Usamos el repositorio en lugar de llamar a Firestore directo
+                val res = repository.getAllProperties()
+                _listaPropiedades.value = res.getOrDefault(emptyList())
             }
 
         }

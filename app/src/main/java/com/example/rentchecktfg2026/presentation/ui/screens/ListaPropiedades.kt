@@ -36,13 +36,15 @@ import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ListaPropiedades (propiedadViewModel: PropiedadViewModel= viewModel(),
+fun ListaPropiedades (propiedadViewModel: PropiedadViewModel= koinViewModel(),
                       navController: NavController){
 
     val propiedades by propiedadViewModel.listaPropiedades.collectAsState()
     val azul = Color(0xFF2D63ED)
+
     //cargamos los datos
     LaunchedEffect(Unit) {
         propiedadViewModel.cargarMisPropiedades()

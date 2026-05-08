@@ -56,13 +56,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 
 import com.example.rentchecktfg2026.presentation.viewmodels.PropiedadViewModel
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AltaPropiedad(
     navController: NavController,
-    propiedadViewModel: PropiedadViewModel = viewModel()
+    propiedadViewModel: PropiedadViewModel = koinViewModel ()
 ) {
     val titulo by propiedadViewModel.titulo.collectAsState()
     val precio by propiedadViewModel.precio.collectAsState()

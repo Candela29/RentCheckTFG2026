@@ -7,7 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rentchecktfg2026.data.repositories.DocumentRepositoryImpl
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
+import com.example.rentchecktfg2026.domain.repositories.DocumentRepository
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,8 +21,8 @@ import kotlinx.coroutines.launch
 
 
 class InquilinoPerfilViewModel(
-    private val repository: UserRepositoryImpl= UserRepositoryImpl(FirebaseFirestore.getInstance())
-
+    private val userRepo: UserRepository,
+    private val docRepo: DocumentRepository
 ) : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -48,61 +51,31 @@ class InquilinoPerfilViewModel(
         cargarDatosUsuario()
     }
     fun subidaDocumento(uri: Uri, esDni: Boolean) {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        Log.d("SUBIDA", "UID: $uid")
-        Log.d("SUBIDA", "URI: $uri")
-
-        if (uid == null) {
-            Log.e("SUBIDA", "❌ No hay usuario logueado")
-            return
-        }
-
-        val tipo = if (esDni) "dni" else "nomina"
-        val campoFirestore = if (esDni) "dniUrl" else "nominaUrl"
+        val uid = auth.currentUser?.uid ?: return
+        val tipo = if (esDni) "DNI" else "NOMINA"
 
         viewModelScope.launch {
-            Log.d("SUBIDA", "Subiendo a Storage: $tipo")
-            val urlDescarga = repository.subirDocumento(uri, tipo)
-            Log.d("SUBIDA", "URL obtenida: $urlDescarga")
+            // Usamos docRepo
+            val result = docRepo.uploadDocument(uri, tipo, uid)
 
-            if (urlDescarga != null) {
-                val exito = repository.updateDocumentUrl(
-                    id = uid,
-                    campo = campoFirestore,
-                    url = urlDescarga
-                )
-                Log.d("SUBIDA", "Guardado en Firestore: $exito")
-                if (exito) {
-                    if (esDni) _dniSubido.value = true else _nominaSubida.value = true
-                }
+            if (result.isSuccess) {
+                if (esDni) _dniSubido.value = true else _nominaSubida.value = true
             } else {
-                Log.e("SUBIDA", "❌ urlDescarga es null - falló el Storage")
+                Log.e("SUBIDA", "Error: ${result.exceptionOrNull()?.message}")
             }
         }
     }
 
     // Funciones por si quieres rellenar los datos desde otra pantalla
     fun cargarDatosUsuario() {
-        val uid = auth.currentUser?.uid
-        if (uid != null) {
-            // Quitamos el viewModelScope.launch porque Firebase ya es asíncrono
-            db.collection("users").document(uid).get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        // Importante: comprueba que los nombres coincidan con los de Firestore
-                        _nombre.value = document.getString("name") ?: "Sin nombre"
-                        _email.value= document.getString("email") ?: ""
-                        _telefono.value = document.getString("telefono") ?: ""
-                    } else {
-                        _nombre.value = "Usuario no encontrado"
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    _nombre.value = "Error al cargar"
-                    println("Error Firebase: ${exception.message}")
-                }
-        } else {
-            _nombre.value = "No hay sesión activa"
+        val uid = auth.currentUser?.uid ?: return
+        viewModelScope.launch {
+            val result = userRepo.getUserById(uid)
+            result.getOrNull()?.let { user ->
+                _nombre.value = user.name
+                _email.value = user.email
+                _telefono.value = user.telefono
+            }
         }
     }
 }

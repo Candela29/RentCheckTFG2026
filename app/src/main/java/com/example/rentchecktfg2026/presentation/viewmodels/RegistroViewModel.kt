@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.User
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,10 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class RegistroViewModel : ViewModel() {
+class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
-    private val userRepository= UserRepositoryImpl(FirebaseFirestore.getInstance())
+    private val userRepository= UserRepositoryImpl()
 
     // 1. Definimos los estados
     private val _loading = MutableStateFlow(false)
@@ -53,10 +54,10 @@ class RegistroViewModel : ViewModel() {
 
                 viewModelScope.launch {
 
-                    val guardadoOk = userRepository.saveUser(nuevoUsuario)
+                    val res = userRepository.saveUser(nuevoUsuario)
 
                     _loading.value = false
-                    if (guardadoOk) {
+                    if (res.isSuccess) {
 
                         _registroExitoso.value = true
                     } else {

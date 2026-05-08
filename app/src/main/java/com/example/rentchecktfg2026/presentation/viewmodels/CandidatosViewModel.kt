@@ -6,11 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.User
+import com.example.rentchecktfg2026.domain.repositories.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class CandidatosViewModel(
-    private val repository: UserRepositoryImpl= UserRepositoryImpl(),
+    private val repository: UserRepository ,
     private val isPreview: Boolean=false
 ) : ViewModel() {
     private val _candidatos = MutableLiveData<List<User>>(emptyList())
@@ -26,9 +27,9 @@ class CandidatosViewModel(
         // 2. Usamos el modelo User con los nombres de campos nuevos
         viewModelScope.launch {
             try {
-                val lista = repository.obtenerInquilinos()
+                val result = repository.obtenerInquilinos()
                 // Usamos postValue para asegurar que se actualiza en el hilo principal
-                _candidatos.postValue(lista)
+                _candidatos.postValue(result.getOrDefault(emptyList()))
             } catch (e: Exception) {
                 _candidatos.postValue(emptyList())
             }

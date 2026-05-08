@@ -36,11 +36,12 @@ import com.example.rentchecktfg2026.domain.model.User
 
 import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.viewmodels.RegistroViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegistroScreen(
     navController: NavController,
-    registroViewModel: RegistroViewModel = viewModel()
+    registroViewModel: RegistroViewModel = koinViewModel()
 ) {
     // Estados locales para los formularios
     var rol by remember { mutableStateOf("") }

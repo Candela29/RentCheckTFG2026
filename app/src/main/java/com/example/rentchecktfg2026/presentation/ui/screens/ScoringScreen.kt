@@ -18,11 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.ui.utils.*
+import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScoringScreen() {
+fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
 
     var salario by remember { mutableStateOf("") }
 
@@ -135,7 +137,7 @@ fun ScoringScreen() {
 
             Button(
                 onClick = {
-                    score = calcularScoring(
+                    val resultado = calcularScoring(
                         salario.toIntOrNull() ?: 0,
                         alquiler.toIntOrNull() ?: 0,
                         contrato,
@@ -143,6 +145,10 @@ fun ScoringScreen() {
                         ingresosExtra,
                         impagosPrevios
                     )
+                    score = resultado
+
+                    //guardamos en la nube
+                    scoringViewModel.guardarResultadoScoring(resultado)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
