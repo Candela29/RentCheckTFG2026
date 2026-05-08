@@ -5,6 +5,8 @@ import com.example.rentchecktfg2026.domain.model.Document
 
 interface DocumentRepository {
 
+    //Repositorio de Document
+
     //Para subir el documento al servidor de Java
     suspend fun uploadDocument(uri: Uri, type: String, userId: String): Result<Document>
     suspend fun getDocumentsByUser(userId: String): Result<List<Document>>
