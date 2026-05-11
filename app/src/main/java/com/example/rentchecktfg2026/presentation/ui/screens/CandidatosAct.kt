@@ -82,15 +82,15 @@ fun CandidatosAct(
                 Text(
                     "Candidatos registrados",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
                 )
                 Button(
                     onClick = { vm.filterTop() },
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = azul),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Filtrar Solvencia Alta")
+                    Text("Filtrar Solvencia Alta", fontSize = 12.sp)
                 }
             }
 
@@ -118,11 +118,7 @@ fun CandidatosAct(
 
 @Composable
 fun CandidatoCard(c: User) {
-    val colorPuntos=when {
-        c.scoring>70-> Color(0xFF4CAF50)
-        c.scoring> 40 -> Color(0xFFFFC107)
-        else -> Color(0xFFF44336)
-    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()

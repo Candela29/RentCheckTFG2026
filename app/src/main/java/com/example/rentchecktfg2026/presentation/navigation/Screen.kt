@@ -19,6 +19,7 @@ sealed class Screen(val route:String){
 
     object ListaInmubeles :Screen(" Lista_Inmuebles")
 
+    object DetalleScoring: Screen ("Detalle_Scoring")
 
 
 }

@@ -2,6 +2,14 @@ package com.example.rentchecktfg2026.presentation.ui.utils
 
 import androidx.compose.ui.graphics.Color
 
+
+data class ScoringResult(
+    val total: Int,
+    val puntosFinanciero: Int,
+    val puntosContrato: Int,
+    val puntosAntiguedad: Int,
+    val puntosExtras: Int
+)
 fun calcularScoring(
 
     salario:Int,
@@ -11,7 +19,7 @@ fun calcularScoring(
     ingresosExtra:Boolean,
     impagosPrevios:Boolean
 
-):Int{
+): ScoringResult{
 
     var puntos = 0
 
@@ -20,66 +28,52 @@ fun calcularScoring(
 
     val ratio = alquiler * 100 / salario
 
-    puntos += when{
-
+    val pFinanciero = when {
         ratio <= 30 -> 40
-
         ratio <= 35 -> 30
-
         ratio <= 40 -> 20
-
         else -> 0
-
     }
 
 
     // 2 estabilidad laboral
 
-    puntos += when(contrato){
-
-        "Indefinido" -> 25
-
-        "Funcionario" -> 25
-
+    val pContrato = when (contrato) {
+        "Indefinido", "Funcionario" -> 25
         "Temporal" -> 15
-
         "Autonomo" -> 10
-
         else -> 5
-
     }
 
 
     // 3 antiguedad
 
-    puntos += when{
-
+    val pAntiguedad = when {
         antiguedad >= 5 -> 15
-
         antiguedad >= 2 -> 10
-
         antiguedad >= 1 -> 5
-
         else -> 0
-
     }
 
 
     // 4 ingresos extra
 
-    if(ingresosExtra)
+    var pExtras = 0
+    if (ingresosExtra) pExtras += 10
+    if (!impagosPrevios) pExtras += 10
 
-        puntos += 10
+    var totalFinal = pFinanciero + pContrato + pAntiguedad + pExtras
 
+// Si el total es mayor a 100, lo dejamos en 100
+    if (totalFinal > 100) {
+        totalFinal = 100
+    }
+// Si por algún error fuera menor a 0, lo dejamos en 0
+    else if (totalFinal < 0) {
+        totalFinal = 0
+    }
 
-
-
-    if(!impagosPrevios)
-
-        puntos += 10
-
-
-    return puntos.coerceIn(0,100)
+    return ScoringResult(total=totalFinal, pFinanciero, pContrato, pAntiguedad, pExtras)
 
 }
 

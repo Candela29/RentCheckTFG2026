@@ -16,7 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.ui.utils.*
 import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -24,13 +27,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
+fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel(), navController: NavController) {
 
     var salario by remember { mutableStateOf("") }
 
     var alquiler by remember { mutableStateOf("") }
 
-    var contrato by remember { mutableStateOf("Indefinido") }
+    var contrato by remember { mutableStateOf("") }
 
     var antiguedad by remember { mutableStateOf("") }
 
@@ -47,13 +50,7 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Cálculo de solvencia estimada", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = azul,
-                    titleContentColor = Color.White
-                )
-                )
+            MenuDeAcciones(navController=navController, titulo = "Cálculo de Scoring", rol= "INQUILINO")
         },
         containerColor = gris
     ) { innerPadding ->
@@ -81,7 +78,7 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
                     OutlinedTextField(
                         value = salario,
                         onValueChange = { salario = it },
-                        label = { Text("Salario mensual neto") },
+                        label = { Text("Salario mensual") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     )
@@ -90,7 +87,7 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
                     OutlinedTextField(
                         value = alquiler,
                         onValueChange = { alquiler = it },
-                        label = { Text("Precio del alquiler") },
+                        label = { Text("Precio del alquiler ") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     )
@@ -114,9 +111,10 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
                     )
 
                     Row(
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Checkbox(checked = ingresosExtra, onCheckedChange = { impagosPrevios = it })
+                        Checkbox(checked = ingresosExtra, onCheckedChange = { ingresosExtra = it })
                         Text("Cuento con ingresos extra comprobables")
                     }
 
@@ -129,76 +127,62 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
                             color = if (impagosPrevios) Color.Black else Color.Gray
                         )
                     }
+                    Button(
+                        modifier=Modifier.fillMaxWidth().height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = azul,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        onClick = {
+                            //Convertimos a números (usamos 0 si está vacío)
+                            val s = salario.toIntOrNull() ?: 0
+                            val a = alquiler.toIntOrNull() ?: 0
+                            val ant = antiguedad.toIntOrNull() ?: 0
+
+                            if (s > 0) {
+                                // 2. Calculamos el ScoringResult (el paquete con el desglose)
+                                val resultadoCompleto = calcularScoring(
+                                    salario = s,
+                                    alquiler = a,
+                                    contrato = contrato,
+                                    antiguedad = ant,
+                                    ingresosExtra = ingresosExtra,
+                                    impagosPrevios = impagosPrevios
+                                )
+
+                                // 3. Enviamos al ViewModel para guardar y subir a la nube
+                                scoringViewModel.calcularYGuardar(
+                                    s = s.toDouble(),
+                                    a = a.toDouble(),
+                                    contrato = contrato,
+                                    ant = ant,
+                                    result = resultadoCompleto
+                                )
+
+                                // 4. Navegamos a la pantalla de detalle que acabamos de crear
+                                navController.navigate(Screen.DetalleScoring.route)
+                            }
+                        }
+                    ){
+                        Text("ANALIZAR SOLVENCIA", fontWeight = FontWeight.Bold)
+                    }
 
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = {
-                    val resultado = calcularScoring(
-                        salario.toIntOrNull() ?: 0,
-                        alquiler.toIntOrNull() ?: 0,
-                        contrato,
-                        antiguedad.toIntOrNull() ?: 0,
-                        ingresosExtra,
-                        impagosPrevios
-                    )
-                    score = resultado
-
-                    //guardamos en la nube
-                    scoringViewModel.guardarResultadoScoring(resultado)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = azul),
-                shape = RoundedCornerShape(12.dp)
-
-            ) {
-                Icon(Icons.Default.Analytics, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("CALCULAR SCORING ESTIMADO", fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            score?.let {
-                val color = colorSemaforo(it)
-
-
-                Text(
-
-                    "Resultado: $it / 100"
-
-                )
-
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-
-                Box(
-
-                    modifier = Modifier
-
-                        .size(140.dp)
-
-                        .background(color)
-
-                )
-
-            }
         }
 
 
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun ScoringScreenPreview(){
 
-    ScoringScreen()
+    ScoringScreen(rememberNavController())
 
-}
+}*/

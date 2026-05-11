@@ -43,6 +43,7 @@ val appModule = module {
     single<PropertyRepository>{ PropertyRepositoryImpl(get()) }
     single<ApplicationRepository>{ ApplicationRepositoryImpl() }
     single<DocumentRepository>{ DocumentRepositoryImpl(androidContext()) }
+    single { ScoringViewModel(get()) }
 
     factory { ApplyToPropertyUseCase(get()) }
     factory { CreatePropertyUseCase(get()) }
@@ -60,7 +61,7 @@ val appModule = module {
     viewModel { RegistroViewModel(get()) }
     viewModel { CandidatosViewModel(get()) }
     viewModel { PropiedadViewModel(get()) }
-    viewModel { ScoringViewModel(get()) }
+
     viewModel { InquilinoPerfilViewModel(get(), get()) }
 
 }

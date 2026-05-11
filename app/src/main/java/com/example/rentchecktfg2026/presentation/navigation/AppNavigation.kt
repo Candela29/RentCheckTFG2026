@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.ui.screens.AltaPropiedad
 import com.example.rentchecktfg2026.presentation.ui.screens.CandidatosAct
+import com.example.rentchecktfg2026.presentation.ui.screens.DetalleScoring
 import com.example.rentchecktfg2026.presentation.ui.screens.InquilinoPerfil
 import com.example.rentchecktfg2026.presentation.ui.screens.ListaPropiedades
 import com.example.rentchecktfg2026.presentation.ui.screens.Login
@@ -30,7 +31,7 @@ fun AppNavigation(){
         }
 
         composable(Screen.Scoring.route){
-            ScoringScreen()
+            ScoringScreen(navController=navController)
         }
 
         composable (Screen.AltaPropiedad.route){
@@ -52,8 +53,12 @@ fun AppNavigation(){
         composable (Screen.ListaInmubeles.route ){
             ListaPropiedades(navController=navController)
         }
+        composable (Screen.DetalleScoring.route ){
+            DetalleScoring(navController=navController)
+        }
 
 
     }
 
 }
+

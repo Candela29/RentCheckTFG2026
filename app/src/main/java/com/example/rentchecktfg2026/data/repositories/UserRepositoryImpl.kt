@@ -58,8 +58,7 @@ class UserRepositoryImpl(
 
     override suspend fun obtenerInquilinos(): Result<List<User>> {
         return try {
-            val snapshot = firestore.collection("users")
-                .whereEqualTo("role", "Inquilino")
+            val snapshot = firestore.collection("inquilinos")
                 .get().await()
             Result.success(snapshot.toObjects(User::class.java))
         } catch (e: Exception) {
@@ -67,10 +66,10 @@ class UserRepositoryImpl(
         }
     }
 
-    suspend fun guardarScoring(id:String, score: Int): Boolean{
+    override suspend fun guardarScoring(user: User): Boolean{
         return try{
-            firestore.collection("users").document(id)
-                .update("scoring",score)
+            firestore.collection("inquilinos").document(user.id)
+                .set(user)
                 .await()
             true
         }catch (e: Exception){
@@ -78,6 +77,19 @@ class UserRepositoryImpl(
             false
         }
     }
+
+    override suspend fun calcularScoringApi(
+        id:String, ingresos: Double, alquiler: Double, contrato:String, antiguedad: Int
+    ): Result<User> {
+        return try{
+            val response= api.calculateScoring(id,ingresos,alquiler,contrato, antiguedad)
+            if (response.isSuccessful) Result.success(response.body()!!)
+            else Result.failure(Exception("Error en API"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+        }
+
 
     override fun cerrarSesion(){
         auth.signOut()
