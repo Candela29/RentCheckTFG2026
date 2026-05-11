@@ -28,7 +28,20 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
     private val _registroExitoso = MutableStateFlow(false)
     val registroExitoso= _registroExitoso.asStateFlow()
 
-    fun registrarUsuario(nombre: String, email: String, telefono: String, password: String, rol: String) {
+
+    private fun isValidPassword(password: String): Boolean {
+
+        if (password.contains(" ")) return false
+
+        //caracteres obligatorios
+        val regex = Regex(
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#\$!%*?&._-]).{12,64}$"
+        )
+
+        return regex.matches(password)
+    }
+
+    fun registrarUsuario(nombre: String, email: String, telefono: String, password: String, confirmPassword: String, rol: String) {
 
         _mensaje.value = ""
 
@@ -37,10 +50,34 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
             return
         }
 
+        if (!isValidEmail(email)) {
+            _mensaje.value = "Email inválido"
+            return
+        }
+
+
+        if (password != confirmPassword) {
+            _mensaje.value = "Las contraseñas no coinciden"
+            return
+        }
+
+        if (!isValidPassword(password)) {
+            _mensaje.value =
+                "La contraseña debe tener 12+ caracteres, mayúscula, minúscula, número y símbolo"
+            return
+        }
+
+        if (rol.uppercase() !in listOf("INQUILINO", "INMOBILIARIA")) {
+            _mensaje.value = "Rol no permitido"
+            return
+        }
+
         _loading.value = true
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { result ->
+
+                result.user?.sendEmailVerification()
 
                 val uid = result.user?.uid ?: ""
 
@@ -49,7 +86,9 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
                     name = nombre,
                     email = email,
                     telefono= telefono,
-                    role = rol.uppercase()
+                    role = rol.uppercase(),
+                    emailVerified = false,
+                    documentExpiryAt = System.currentTimeMillis()
                 )
 
                 viewModelScope.launch {
@@ -70,6 +109,10 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
                 _loading.value = false
                 _mensaje.value = "Error en registro: ${it.message}"
             }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
     fun resetEstado(){
         _registroExitoso.value=false

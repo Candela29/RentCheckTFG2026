@@ -19,7 +19,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalInspectionMode
+
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,11 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+
 
 import com.example.rentchecktfg2026.R
-import com.example.rentchecktfg2026.domain.model.User
+
 
 import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.viewmodels.RegistroViewModel
@@ -49,6 +48,7 @@ fun RegistroScreen(
     var email by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     // Estados observados del ViewModel
@@ -82,6 +82,7 @@ fun RegistroScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
@@ -195,6 +196,17 @@ fun RegistroScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            TextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirmar Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                leadingIcon = { Icon(Icons.Default.Lock, null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             // BOTÓN SIMPLIFICADO: Ahora solo llama al ViewModel
             Button(
                 colors = ButtonDefaults.buttonColors(containerColor = azul),
@@ -209,6 +221,7 @@ fun RegistroScreen(
                         email = email,
                         telefono = prefijoLimpio + telefono,
                         password = password,
+                        confirmPassword = confirmPassword,
                         rol = rol
                     )
                 }
