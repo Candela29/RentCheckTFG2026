@@ -2,6 +2,7 @@ package com.example.rentchecktfg2026.data.repositories
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -19,6 +20,7 @@ class DocumentRepositoryImpl(private val context: Context) : DocumentRepository 
 
             //1. Preparar el archivo
             val file = uriToFile(uri, context)
+            Log.d("SUBIDA", "Archivo temporal: ${file.absolutePath}, size: ${file.length()}")
             val requestFile = file.asRequestBody("application/pdf".toMediaTypeOrNull())
             val filePart = MultipartBody.Part.createFormData("file", file.name,requestFile)
 
@@ -26,14 +28,22 @@ class DocumentRepositoryImpl(private val context: Context) : DocumentRepository 
             val typePart = type.toRequestBody("text/plain".toMediaTypeOrNull())
             val userPart = userId.toRequestBody("text/plain".toMediaTypeOrNull())
 
+
+            Log.d("SUBIDA", "Enviando a: ${RetrofitClient.BASE_URL}/api/documents/upload")
+
             //3. Llamar a la API de Java
             val response = api.uploadDocument(filePart, typePart, userPart)
+            Log.d("SUBIDA", "HTTP status: ${response.code()}")
+            Log.d("SUBIDA", "HTTP body: ${response.errorBody()?.string()}")
+
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Error al subir al servidor local"))
+                Result.failure(Exception("Error HTTP ${response.code()}"))
             }
         } catch (e: Exception) {
+            Log.e("SUBIDA", "Excepción: ${e.message}")
+            Log.e("SUBIDA", "Causa: ${e.cause}")
             Result.failure(e)
         }
     }
@@ -57,9 +67,16 @@ class DocumentRepositoryImpl(private val context: Context) : DocumentRepository 
     }
 
     private fun uriToFile(uri: Uri, context: Context): File {
-        val file = File(context.cacheDir, "upload_${System.currentTimeMillis()}.pdf")
+        val file = File(context.cacheDir, "temp_doc.pdf")
         context.contentResolver.openInputStream(uri)?.use { input ->
-            file.outputStream().use { output -> input.copyTo(output) }
+            file.outputStream().use { output ->
+                val buffer = ByteArray(4 * 1024) // Buffer de 4KB
+                var read: Int
+                while (input.read(buffer).also { read = it } != -1) {
+                    output.write(buffer, 0, read)
+                }
+                output.flush()
+            }
         }
         return file
     }

@@ -14,10 +14,12 @@ import com.example.rentchecktfg2026.domain.repositories.UserRepository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class InquilinoPerfilViewModel(
@@ -52,16 +54,25 @@ class InquilinoPerfilViewModel(
     }
     fun subidaDocumento(uri: Uri, esDni: Boolean) {
         val uid = auth.currentUser?.uid ?: return
+        Log.d("SUBIDA", "UID: $uid")
+        Log.d("SUBIDA", "URI: $uri")
         val tipo = if (esDni) "DNI" else "NOMINA"
 
-        viewModelScope.launch {
-            // Usamos docRepo
-            val result = docRepo.uploadDocument(uri, tipo, uid)
+        viewModelScope.launch(Dispatchers.IO) {
 
-            if (result.isSuccess) {
-                if (esDni) _dniSubido.value = true else _nominaSubida.value = true
-            } else {
-                Log.e("SUBIDA", "Error: ${result.exceptionOrNull()?.message}")
+            Log.d("SUBIDA", "Llamando al servidor...")
+            // Usamos docRepo
+            val result = docRepo.uploadDocument(uri, if(esDni) "DNI" else "NOMINA", uid)
+
+            Log.d("SUBIDA", "Resultado: ${result.isSuccess}")
+            Log.d("SUBIDA", "Error: ${result.exceptionOrNull()?.message}")
+
+            withContext(Dispatchers.Main) { // Volvemos al hilo principal solo para actualizar la pantalla
+                if (result.isSuccess) {
+                    if (esDni) _dniSubido.value = true else _nominaSubida.value = true
+                } else {
+                    // Mostrar error
+                }
             }
         }
     }

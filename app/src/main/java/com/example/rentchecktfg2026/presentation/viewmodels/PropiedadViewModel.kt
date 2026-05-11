@@ -80,7 +80,11 @@ class PropiedadViewModel (
         cargarMisPropiedades()
     }
     fun registrarPropiedad(onSuccess: () -> Unit) {
-        if (titulo.value.isEmpty() || precio.value.isEmpty()) return
+        Log.d("PROPIEDAD", "titulo: ${titulo.value}, precio: ${precio.value}")
+        if (titulo.value.isEmpty() || precio.value.isEmpty()){
+            Log.e("PROPIEDAD", "❌ Faltan datos obligatorios")
+            return
+        }
         viewModelScope.launch {
             try {
                 //Crear el objeto con los datos actuales
@@ -94,8 +98,11 @@ class PropiedadViewModel (
                     propertyType = tipoVivienda.value
                 )
 
+                Log.d("PROPIEDAD", "Guardando: $nuevaPropiedad")
                 //Llamar al repositorio para guardar en Firestore
                 val resultado = repository.createProperty(nuevaPropiedad)
+                Log.d("PROPIEDAD", "Resultado: ${resultado.isSuccess}")
+                Log.d("PROPIEDAD", "Error: ${resultado.exceptionOrNull()?.message}")
 
                 if (resultado.isSuccess) {
 
@@ -103,7 +110,7 @@ class PropiedadViewModel (
                     onSuccess()
                 }
             } catch (e: Exception) {
-                Log.e("ERROR_SAVE", "Error al registrar: ${e.message}")
+                Log.e("PROPIEDAD", "❌ Excepción: ${e.message}")
             }
         }
     }

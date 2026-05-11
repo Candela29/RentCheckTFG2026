@@ -1,5 +1,6 @@
 package com.example.rentchecktfg2026.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
@@ -50,13 +51,12 @@ class LoginViewModel(
     }
 
     fun onLoginClick() {
-        // Aquí iría tu lógica de Firebase más adelante
-        val user = _username.value
+        val userEmail = _username.value
         val pass = _password.value
-       if(user.isBlank()|| pass.isBlank()){
-           _error.value="Rellena todos los campos"
-           return
-       }
+        if (userEmail.isBlank() || pass.isBlank()) {
+            _error.value = "Rellena todos los campos"
+            return
+        }
 
         _error.value = ""
 
@@ -65,10 +65,25 @@ class LoginViewModel(
                 val uid = result.user?.uid
                 if (uid != null) {
                     viewModelScope.launch {
+                        // 1. Obtienes el usuario de FIRESTORE
                         val res = userRepository.getUserById(uid)
                         val user = res.getOrNull()
+
                         if (user != null) {
-                            // Aquí llega el "INQUILINO" o "INMOBILIARIA" de tu Firestore
+                            // 2. ¡CLAVE! Sincronizas con tu API de INTELLIJ
+                            // Esto guardará al usuario en tu base de datos H2 (archivo)
+                            val syncResult = repository.syncUserWithApi(user)
+
+                            if (syncResult.isSuccess) {
+                                Log.d("SYNC", "Usuario sincronizado con API correctamente")
+                            } else {
+                                Log.e(
+                                    "SYNC",
+                                    "Fallo al sincronizar: ${syncResult.exceptionOrNull()?.message}"
+                                )
+                            }
+
+                            // 3. Navegas según el rol
                             _roleResult.value = user.role
                         } else {
                             _error.value = "No se encontraron datos de perfil"
@@ -76,8 +91,6 @@ class LoginViewModel(
                     }
                 }
             }
-            .addOnFailureListener {
-                _error.value = "Error: ${it.message}"
-            }
+
     }
 }

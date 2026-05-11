@@ -1,6 +1,7 @@
 package com.example.rentchecktfg2026.presentation.ui.screens
 
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -66,11 +67,16 @@ fun InquilinoPerfil(
 
     //Selectores de archivos
 
-    val launcherDni= rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri->
-        uri?.let {inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
+    val launcherDni = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        Log.d("LAUNCHER", "URI recibida: $uri")  // ← añade esto
+        uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = true) }
     }
-
-    val launcherNomina = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    val launcherNomina = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        Log.d("LAUNCHER", "URI recibida: $uri")  // ← añade esto
         uri?.let { inquilinoPerfilViewModel.subidaDocumento(it, esDni = false) }
     }
 
