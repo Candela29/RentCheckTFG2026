@@ -34,7 +34,7 @@ class ScoringViewModel(
                     name = nombre,
                     email = email,
                     scoring = score,
-
+                    telefono = "",
                     role = "INQUILINO"
                 )
              repository.guardarScoring(objetoInquilino)
@@ -57,11 +57,36 @@ class ScoringViewModel(
                 email = auth.currentUser?.email ?: "",
                 scoring = result.total,    // Usamos el total calculado
                 contractType = contrato,   // Pasamos el contrato del formulario
-                role = "INQUILINO"
+                role = "INQUILINO",
+                emailVerified = auth.currentUser?.isEmailVerified ?: false,
+                documentExpiryAt = 0L
             )
             // Guardar en la colección 'inquilinos'
             repository.guardarScoring(nuevoInquilino)
             repository.updateScoring(id, result.total)
+        }
+    }
+
+    fun enviarExpediente (score:Int, contrato:String){
+        val user= auth.currentUser
+        if(user!=null){
+            viewModelScope.launch {
+                val objetoInquilino= User(
+                    id=user.uid,
+                    name=user.displayName?:"",
+                    email =user.email?:"",
+                    scoring = score,
+                    contractType = contrato,
+                    role="INQUILINO",
+                    description = "Perfil enviado desde el test de solvencia"
+                )
+                //guardamos en la coleccion que lee la inmobiliaria
+                repository.guardarScoring(objetoInquilino)
+
+                //actualizamos perfil general
+                repository.updateScoring(user.uid,score)
+
+            }
         }
     }
 

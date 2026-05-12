@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 
 class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
-    private val userRepository= UserRepositoryImpl()
+
+
 
     // 1. Definimos los estados
     private val _loading = MutableStateFlow(false)
@@ -88,12 +88,14 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
                     telefono= telefono,
                     role = rol.uppercase(),
                     emailVerified = false,
-                    documentExpiryAt = System.currentTimeMillis()
+                    documentExpiryAt = System.currentTimeMillis(),
+                    scoring = 0,             // Añadido para que no de error
+                    contractType = "",
                 )
 
                 viewModelScope.launch {
 
-                    val res = userRepository.saveUser(nuevoUsuario)
+                    val res = repository.saveUser(nuevoUsuario)
 
                     _loading.value = false
                     if (res.isSuccess) {

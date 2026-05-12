@@ -16,7 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.ui.utils.*
 import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -24,7 +27,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
+fun ScoringScreen(navController: NavController,
+    scoringViewModel: ScoringViewModel = koinViewModel(),) {
 
     var salario by remember { mutableStateOf("") }
 
@@ -47,13 +51,8 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Cálculo de solvencia estimada", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = azul,
-                    titleContentColor = Color.White
-                )
-                )
+            MenuDeAcciones(navController=navController,titulo="Cálculo de scoring",rol="INQUILINO")
+
         },
         containerColor = gris
     ) { innerPadding ->
@@ -116,7 +115,7 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Checkbox(checked = ingresosExtra, onCheckedChange = { impagosPrevios = it })
+                        Checkbox(checked = ingresosExtra, onCheckedChange = { ingresosExtra = it })
                         Text("Cuento con ingresos extra comprobables")
                     }
 
@@ -137,59 +136,47 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
 
             Button(
                 onClick = {
-                    val resultado = calcularScoring(
-                        salario.toIntOrNull() ?: 0,
-                        alquiler.toIntOrNull() ?: 0,
-                        contrato,
-                        antiguedad.toIntOrNull() ?: 0,
-                        ingresosExtra,
-                        impagosPrevios
-                    )
-                    score = resultado
+                    navController.navigate(Screen.DetalleScoring.route)
+                    // 1. Convertimos los textos a números de forma segura
+                    val s = salario.toIntOrNull() ?: 0
+                    val a = alquiler.toIntOrNull() ?: 0
+                    val ant = antiguedad.toIntOrNull() ?: 0
 
-                    //guardamos en la nube
-                    scoringViewModel.guardarResultadoScoring(resultado)
+                    // 2. IMPORTANTE: calcularScoring ahora devuelve un OBJETO (ScoringResult), no un Int
+                    val resultadoCompleto = calcularScoring(
+                        salario = s,
+                        alquiler = a,
+                        contrato = contrato,
+                        antiguedad = ant,
+                        ingresosExtra = ingresosExtra,
+                        impagosPrevios = impagosPrevios
+                    )
+
+                    // 3. Usamos la función del ViewModel que acepta estos nuevos tipos
+                    // Nota: Asegúrate de que el ViewModel tenga esta función llamada calcularYGuardar
+                    scoringViewModel.calcularYGuardar(
+                        s = s.toDouble(),
+                        a = a.toDouble(),
+                        contrato = contrato,
+                        ant = ant,
+                        result = resultadoCompleto
+                    )
+
+                    // 4. Si quieres guardar el score local para mostrarlo abajo:
+                    score = resultadoCompleto.total
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = azul),
                 shape = RoundedCornerShape(12.dp)
-
             ) {
                 Icon(Icons.Default.Analytics, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("CALCULAR SCORING ESTIMADO", fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            score?.let {
-                val color = colorSemaforo(it)
-
-
-                Text(
-
-                    "Resultado: $it / 100"
-
-                )
-
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-
-                Box(
-
-                    modifier = Modifier
-
-                        .size(140.dp)
-
-                        .background(color)
-
-                )
-
+                Text("ANALIZAR SOLVENCIA", fontWeight = FontWeight.Bold)
             }
         }
+
 
 
     }
@@ -199,6 +186,6 @@ fun ScoringScreen(scoringViewModel: ScoringViewModel = koinViewModel()) {
 @Composable
 fun ScoringScreenPreview(){
 
-    ScoringScreen()
+    ScoringScreen(rememberNavController())
 
 }

@@ -9,15 +9,17 @@ import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.User
 import com.example.rentchecktfg2026.domain.repositories.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
 
 class CandidatosViewModel(
     private val repository: UserRepository ,
-    private val isPreview: Boolean=false
-) : ViewModel() {
-    // Esta es la fuente de verdad (siempre tiene todos los datos)
-    private var listaCompleta: List<User> = emptyList()
 
+) : ViewModel() {
+
+    private val firestore = FirebaseFirestore.getInstance()
+    // Esta es la fuente de verdad (siempre tiene todos los datos)
+    private var listaOriginal = listOf<User>()
     // Esta es la que observa la UI
     private val _candidatos = MutableLiveData<List<User>>(emptyList())
     val candidatos: LiveData<List<User>> = _candidatos
@@ -29,34 +31,31 @@ class CandidatosViewModel(
     }
 
     private fun obtenerCandidatosReales() {
-        // 2. Usamos el modelo User con los nombres de campos nuevos
-        viewModelScope.launch {
-            try {
-                val result = repository.obtenerInquilinos()
-                val lista = result.getOrDefault(emptyList())
-                // Usamos postValue para asegurar que se actualiza en el hilo principal
 
-                listaCompleta = lista
-                _candidatos.postValue(lista)
+        firestore.collection("inquilinos")
+            .orderBy("scoring", Query.Direction.DESCENDING) // Los mejores primero
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // Manejar error si fuera necesario
+                    return@addSnapshotListener
+                }
 
-                Log.d("DEBUG_CANDIDATOS", "Candidatos cargados: ${lista.size}")
-
-
-            } catch (e: Exception) {
-                Log.e("ERROR_CANDIDATOS", "Error: ${e.message}")
-                _candidatos.postValue(emptyList())
+                if (snapshot != null) {
+                    val usuarios = snapshot.toObjects(User::class.java)
+                    listaOriginal = usuarios
+                    _candidatos.value = usuarios
+                }
             }
-        }
     }
 
 
 
     fun filterTop() {
-        val filtrados = listaCompleta.filter { it.scoring >= 70 }
+        val filtrados = listaOriginal.filter { it.scoring >= 70 }
         _candidatos.value = filtrados
     }
 
     fun limpiarFiltro() {
-        _candidatos.value = listaCompleta
+        _candidatos.value = listaOriginal
     }
 }

@@ -9,10 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,7 +38,7 @@ import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewModel = koinViewModel ()){
+fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewModel = koinViewModel (),score: Int=0,contrato: String=""){
     val res = scoringViewModel.resultadoScoring
 
     val azul= Color(0xFF2D63ED)
@@ -113,16 +118,22 @@ fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewMod
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick = { navController.popBackStack() },
+                    onClick = {
+                        scoringViewModel.enviarExpediente(score,contrato)
+                    },
                     modifier = Modifier.fillMaxWidth(),
+                    colors= ButtonDefaults.buttonColors(containerColor = azul),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("VOLVER AL FORMULARIO")
+                    Icon(Icons.Default.Send,contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("ENVIAR EXPEDIENTE A LA INMOBILIARIA")
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun ItemBarra (titulo: String, puntos: Int, maximo: Int, colorBarra: Color){
