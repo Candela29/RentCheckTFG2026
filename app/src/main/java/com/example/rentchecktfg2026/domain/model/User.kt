@@ -9,6 +9,9 @@ data class User (
     val telefono:String="",
     val description:String="",
 
+    val emailVerified: Boolean = false,
+    val documentExpiryAt: Long = 0L,
+
     // Estos campos son opcionales
     val dniUrl: String = "",
     val nominaUrl: String = "",
