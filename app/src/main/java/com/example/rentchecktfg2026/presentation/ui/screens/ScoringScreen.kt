@@ -136,7 +136,7 @@ fun ScoringScreen(navController: NavController,
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.DetalleScoring.route)
+
                     // 1. Convertimos los textos a números de forma segura
                     val s = salario.toIntOrNull() ?: 0
                     val a = alquiler.toIntOrNull() ?: 0
@@ -163,7 +163,9 @@ fun ScoringScreen(navController: NavController,
                     )
 
                     // 4. Si quieres guardar el score local para mostrarlo abajo:
+
                     score = resultadoCompleto.total
+                    navController.navigate(Screen.DetalleScoring.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

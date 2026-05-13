@@ -1,5 +1,6 @@
 package com.example.rentchecktfg2026.presentation.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -45,48 +46,50 @@ class ScoringViewModel(
     }
     fun calcularYGuardar(s: Double, a: Double, contrato: String, ant: Int, result: ScoringResult) {
         resultadoScoring=result
+        Log.d("SCORING", "Score a guardar: ${result.total}")
+
 
         viewModelScope.launch {
             val id = auth.currentUser?.uid ?: return@launch
-            // Seguimos mandando el total a la API y Firebase
-            repository.calcularScoringApi(id, s, a, contrato, ant)
-            repository.updateScoring(id, result.total)
+            Log.d("SCORING", "UID: $id")
+
+            val usuarioActual = repository.getUserById(id).getOrNull()
+            Log.d("SCORING", "Nombre de Firestore: ${usuarioActual?.name}")
+            Log.d("SCORING", "Scoring actual: ${usuarioActual?.scoring}")
+
             val nuevoInquilino = User(
                 id = id,
-                name = auth.currentUser?.displayName ?: "Candidato",
-                email = auth.currentUser?.email ?: "",
-                scoring = result.total,    // Usamos el total calculado
-                contractType = contrato,   // Pasamos el contrato del formulario
+                name = usuarioActual?.name ?: "",  // ← nombre real de Firestore
+                email = usuarioActual?.email ?: auth.currentUser?.email ?: "",
+                scoring = result.total,
+                contractType = contrato,
                 role = "INQUILINO",
-                emailVerified = auth.currentUser?.isEmailVerified ?: false,
-                documentExpiryAt = 0L
+                telefono = usuarioActual?.telefono ?: ""
             )
-            // Guardar en la colección 'inquilinos'
-            repository.guardarScoring(nuevoInquilino)
+            Log.d("SCORING", "Objeto a guardar: scoring=${nuevoInquilino.scoring}, name=${nuevoInquilino.name}")
+            val ok = repository.guardarScoring(nuevoInquilino)
+            Log.d("SCORING", "Resultado: $ok")
             repository.updateScoring(id, result.total)
+
         }
     }
 
     fun enviarExpediente (score:Int, contrato:String){
-        val user= auth.currentUser
-        if(user!=null){
-            viewModelScope.launch {
-                val objetoInquilino= User(
-                    id=user.uid,
-                    name=user.displayName?:"",
-                    email =user.email?:"",
-                    scoring = score,
-                    contractType = contrato,
-                    role="INQUILINO",
-                    description = "Perfil enviado desde el test de solvencia"
-                )
-                //guardamos en la coleccion que lee la inmobiliaria
-                repository.guardarScoring(objetoInquilino)
-
-                //actualizamos perfil general
-                repository.updateScoring(user.uid,score)
-
-            }
+        val uid = auth.currentUser?.uid ?: return
+        viewModelScope.launch {
+            val usuarioActual = repository.getUserById(uid).getOrNull()
+            val objetoInquilino = User(
+                id = uid,
+                name = usuarioActual?.name ?: "",  // ← nombre real de Firestore
+                email = usuarioActual?.email ?: auth.currentUser?.email ?: "",
+                scoring = score,
+                contractType = contrato,
+                role = "INQUILINO",
+                telefono = usuarioActual?.telefono ?: "",
+                description = "Perfil enviado desde el test de solvencia"
+            )
+            repository.guardarScoring(objetoInquilino)
+            repository.updateScoring(uid, score)
         }
     }
 

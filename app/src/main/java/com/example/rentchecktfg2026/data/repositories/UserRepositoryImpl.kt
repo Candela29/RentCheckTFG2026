@@ -10,6 +10,9 @@ import com.example.rentchecktfg2026.network.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
@@ -56,21 +59,39 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun obtenerInquilinos(): Result<List<User>> {
-        return try {
-            val snapshot = firestore.collection("inquilinos")
-                .get().await()
-            Result.success(snapshot.toObjects(User::class.java))
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    override suspend fun obtenerInquilinos(): Flow<List<User>> = callbackFlow {
+        val subscription = firestore.collection("inquilinos")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                // Mapeamos manualmente cada documento para capturar errores individuales
+                val usuarios = snapshot?.documents?.mapNotNull { doc ->
+                    try {
+                        doc.toObject(User::class.java)
+                    } catch (e: Exception) {
+                        // Si un documento está corrupto (ej. scoring es String),
+                        // lo logueamos y lo saltamos en lugar de cerrar la app.
+                        Log.e("FIREBASE_ERROR", "Error en doc ${doc.id}: ${e.message}")
+                        null
+                    }
+                } ?: emptyList()
+
+                trySend(usuarios)
+            }
+        awaitClose { subscription.remove() }
     }
 
     override suspend fun guardarScoring(user: User): Boolean{
         return try{
+            Log.d("FIRESTORE", "Guardando en inquilinos/${user.id} con scoring=${user.scoring}")
+
             firestore.collection("inquilinos").document(user.id)
                 .set(user)
                 .await()
+            Log.d("FIRESTORE", "✅ Guardado correctamente")
             true
         }catch (e: Exception){
             e.printStackTrace()

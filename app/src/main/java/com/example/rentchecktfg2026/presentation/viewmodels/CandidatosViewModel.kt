@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.User
 import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.network.RetrofitClient
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
@@ -32,20 +33,17 @@ class CandidatosViewModel(
 
     private fun obtenerCandidatosReales() {
 
-        firestore.collection("inquilinos")
-            .orderBy("scoring", Query.Direction.DESCENDING) // Los mejores primero
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    // Manejar error si fuera necesario
-                    return@addSnapshotListener
-                }
+        viewModelScope.launch {
+            // 1. Usamos Flow para tiempo real
+            repository.obtenerInquilinos().collect { lista ->
+                // 2. Ordenamos de mayor a menor puntuación
+                val listaOrdenada = lista.sortedByDescending { it.scoring }
 
-                if (snapshot != null) {
-                    val usuarios = snapshot.toObjects(User::class.java)
-                    listaOriginal = usuarios
-                    _candidatos.value = usuarios
-                }
+                listaOriginal = listaOrdenada
+                _candidatos.value = listaOrdenada
+                Log.d("CANDIDATOS", "Lista actualizada y ordenada: ${lista.size}")
             }
+        }
     }
 
 

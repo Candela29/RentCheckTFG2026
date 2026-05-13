@@ -109,6 +109,8 @@ fun PropertyCard(property: Property){
                 Text(property.title, fontWeight = FontWeight.Bold,style= MaterialTheme.typography.titleMedium)
                 Text(text = "${property.price} €", color = azul, fontWeight = FontWeight.Bold )
                 Text(text = "Tipo: ${property.propertyType}", style = MaterialTheme.typography.bodySmall)
+
+
             }
         }
     }

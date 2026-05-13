@@ -8,7 +8,8 @@ data class ScoringResult(
     val puntosFinanciero: Int,
     val puntosContrato: Int,
     val puntosAntiguedad: Int,
-    val puntosExtras: Int
+    val puntosExtras: Int,
+    val contrato:String=""
 )
 fun calcularScoring(
 
@@ -73,7 +74,7 @@ fun calcularScoring(
         totalFinal = 0
     }
 
-    return ScoringResult(total=totalFinal, pFinanciero, pContrato, pAntiguedad, pExtras)
+    return ScoringResult(total=totalFinal, pFinanciero, pContrato, pAntiguedad, pExtras, contrato = contrato)
 
 }
 

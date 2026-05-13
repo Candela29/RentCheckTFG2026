@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.model.User
 import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.network.RetrofitClient
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -81,6 +82,7 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
 
                 val uid = result.user?.uid ?: ""
 
+                Log.d("REGISTRO", "Guardando usuario con nombre: '$nombre'" )
                 val nuevoUsuario = User(
                     id = uid,
                     name = nombre,
@@ -94,15 +96,21 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
                 )
 
                 viewModelScope.launch {
+                    // .getOrDefault(false) convierte el Result en un Boolean simple
+                    val guardadoOk = repository.saveUser(nuevoUsuario).getOrDefault(false)
 
-                    val res = repository.saveUser(nuevoUsuario)
-
-                    _loading.value = false
-                    if (res.isSuccess) {
-
-                        _registroExitoso.value = true
+                    if (guardadoOk) {
+                        try {
+                            RetrofitClient.instance.syncUser(nuevoUsuario)
+                            _registroExitoso.value = true
+                        } catch (e: Exception) {
+                            Log.e("REGISTRO", "Error sync backend: ${e.message}")
+                            // Aun si falla el backend Java, el registro en Firebase fue OK
+                            _registroExitoso.value = true
+                        }
                     } else {
-                        _mensaje.value = "Error al guardar los datos en el perfil"
+                        _loading.value = false
+                        _mensaje.value = "Error al guardar perfil en la base de datos"
                     }
                 }
             }

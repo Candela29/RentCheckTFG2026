@@ -1,6 +1,7 @@
 package com.example.rentchecktfg2026.domain.repositories
 
 import com.example.rentchecktfg2026.domain.model.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
@@ -9,7 +10,7 @@ interface UserRepository {
     suspend fun saveUser(user: User): Result<Boolean>
     suspend fun syncUserWithApi(user: User): Result<User>
     suspend fun updateScoring(id: String, score: Int): Result<Boolean>
-    suspend fun obtenerInquilinos(): Result<List<User>>
+    suspend fun obtenerInquilinos(): Flow<List<User>>
     fun cerrarSesion()
     suspend fun calcularScoringApi(id:String, ingresos: Double, alquiler: Double, contrato:String, antiguedad: Int): Result<User>
     suspend fun guardarScoring(user: User) : Boolean

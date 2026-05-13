@@ -21,8 +21,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,18 +39,22 @@ import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.ui.utils.colorSemaforo
 import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewModel = koinViewModel (),score: Int=0,contrato: String=""){
+fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewModel = koinViewModel ()){
     val res = scoringViewModel.resultadoScoring
-
+    val snackbarHostState=remember{ SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val azul= Color(0xFF2D63ED)
     val colorPrincipal = if(res!=null) colorSemaforo(res.total) else Color.Gray
 
     Scaffold(
+        snackbarHost = {SnackbarHost(snackbarHostState)},
+
         topBar = {
-            MenuDeAcciones(navController=navController,titulo="Cálculo estimado del scoring",rol="INMOBILIARIA")
+            MenuDeAcciones(navController=navController,titulo="Cálculo estimado del scoring",rol="INQUILINO")
 
         }
     ) { innerPadding ->
@@ -119,7 +127,14 @@ fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewMod
 
                 Button(
                     onClick = {
-                        scoringViewModel.enviarExpediente(score,contrato)
+
+                        val scoring = res?.total ?: 0
+                        val tipoContrato = res?.contrato ?: ""
+                        scoringViewModel.enviarExpediente(scoring, tipoContrato)
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Expediente enviado correctamente")
+                        }
+
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors= ButtonDefaults.buttonColors(containerColor = azul),

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.UserRepositoryImpl
 import com.example.rentchecktfg2026.domain.repositories.UserRepository
+import com.example.rentchecktfg2026.network.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ class LoginViewModel(
 ) {
     // Estado para el usuario
     private val auth = FirebaseAuth.getInstance()
-    private val userRepository= UserRepositoryImpl()
+
     private val _username = MutableStateFlow("")
     val username = _username.asStateFlow()
 
@@ -66,31 +67,21 @@ class LoginViewModel(
                 if (uid != null) {
                     viewModelScope.launch {
                         // 1. Obtienes el usuario de FIRESTORE
-                        val res = userRepository.getUserById(uid)
+                        val res = repository.getUserById(uid)
                         val user = res.getOrNull()
 
                         if (user != null) {
-                            // 2. ¡CLAVE! Sincronizas con tu API de INTELLIJ
-                            // Esto guardará al usuario en tu base de datos H2 (archivo)
-                            val syncResult = repository.syncUserWithApi(user)
-
-                            if (syncResult.isSuccess) {
-                                Log.d("SYNC", "Usuario sincronizado con API correctamente")
-                            } else {
-                                Log.e(
-                                    "SYNC",
-                                    "Fallo al sincronizar: ${syncResult.exceptionOrNull()?.message}"
-                                )
+                            try {
+                                RetrofitClient.instance.syncUser(user)
+                                Log.d("LOGIN", "Usuario sincronizado con backend")
+                            } catch (e: Exception) {
+                                Log.e("LOGIN", "Error sync: ${e.message}")
                             }
-
-                            // 3. Navegas según el rol
                             _roleResult.value = user.role
-                        } else {
-                            _error.value = "No se encontraron datos de perfil"
+                        }
                         }
                     }
                 }
             }
 
     }
-}
