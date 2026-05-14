@@ -40,7 +40,7 @@ val appModule = module {
     single { FirebaseAuth.getInstance() }
 
     single<UserRepository>{ UserRepositoryImpl(get()) }
-    single<PropertyRepository>{ PropertyRepositoryImpl(get()) }
+    single<PropertyRepository>{ PropertyRepositoryImpl(get(),get()) }
     single<ApplicationRepository>{ ApplicationRepositoryImpl() }
     single<DocumentRepository>{ DocumentRepositoryImpl(androidContext()) }
     single { ScoringViewModel(get()) }

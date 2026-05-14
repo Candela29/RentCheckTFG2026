@@ -1,6 +1,9 @@
 package com.example.rentchecktfg2026.presentation.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentchecktfg2026.data.repositories.PropertyRepositoryImpl
@@ -48,6 +51,18 @@ class PropiedadViewModel (
     private val _userRole = MutableStateFlow("inmobiliaria")
     val userRole: StateFlow<String> = _userRole.asStateFlow()
 
+    var propiedadSeleccionada by mutableStateOf<Property?>(null)
+    private val _metros = MutableStateFlow("")
+    val metros: StateFlow<String> = _metros.asStateFlow()
+
+    private val _tienePiscina = MutableStateFlow(false)
+    val tienePiscina: StateFlow<Boolean> = _tienePiscina.asStateFlow()
+
+    private val _tieneAire = MutableStateFlow(false)
+    val tieneAire: StateFlow<Boolean> = _tieneAire.asStateFlow()
+
+    private val _tieneCalefaccion = MutableStateFlow(false)
+    val tieneCalefaccion: StateFlow<Boolean> = _tieneCalefaccion.asStateFlow()
     fun setTitulo(valor: String) {
         _titulo.value = valor
     }
@@ -76,13 +91,21 @@ class PropiedadViewModel (
         _tieneGaraje.value = valor
     }
 
+    fun setMetros(valor: String) { _metros.value = valor }
+
+    fun togglePiscina(valor: Boolean) { _tienePiscina.value = valor }
+
+    fun toggleAire(valor: Boolean) { _tieneAire.value = valor }
+
+    fun toggleCalefaccion(valor: Boolean) { _tieneCalefaccion.value = valor }
+
     init {
         cargarMisPropiedades()
     }
     fun registrarPropiedad(onSuccess: () -> Unit) {
         Log.d("PROPIEDAD", "titulo: ${titulo.value}, precio: ${precio.value}")
         if (titulo.value.isEmpty() || precio.value.isEmpty()){
-            Log.e("PROPIEDAD", "❌ Faltan datos obligatorios")
+            Log.e("PROPIEDAD", "Faltan datos obligatorios")
             return
         }
         viewModelScope.launch {
@@ -95,8 +118,13 @@ class PropiedadViewModel (
                     hasElevator = tieneAscensor.value,
                     isFurnished = estaAmueblado.value,
                     hasGarage = tieneGaraje.value,
-                    propertyType = tipoVivienda.value
+                    propertyType = tipoVivienda.value,
+                    size = _metros.value.toIntOrNull() ?: 0,
+                    hasPool = _tienePiscina.value,         // <-- NUEVO
+                    hasAirConditioning = _tieneAire.value, // <-- NUEVO
+                    hasHeating = _tieneCalefaccion.value,
                 )
+                Log.d("DEBUG_JSON", "Enviando Tipo: ${tipoVivienda.value} y Metros: ${_metros.value}")
 
                 Log.d("PROPIEDAD", "Guardando: $nuevaPropiedad")
                 //Llamar al repositorio para guardar en Firestore
@@ -110,10 +138,12 @@ class PropiedadViewModel (
                     onSuccess()
                 }
             } catch (e: Exception) {
-                Log.e("PROPIEDAD", "❌ Excepción: ${e.message}")
+                Log.e("PROPIEDAD", "Excepción: ${e.message}")
             }
         }
     }
+
+
 
         fun cargarMisPropiedades() {
             viewModelScope.launch {
@@ -123,5 +153,19 @@ class PropiedadViewModel (
             }
 
         }
+    fun removePropiedad(id:String){
+
+        viewModelScope.launch {
+            val resultado = repository.deleteProperty(id)
+
+            if (resultado) {
+                cargarMisPropiedades()
+            }
+        }
+    }
+
+    fun seleccionarPropiedad(property:Property){
+        propiedadSeleccionada= property
+    }
     }
 

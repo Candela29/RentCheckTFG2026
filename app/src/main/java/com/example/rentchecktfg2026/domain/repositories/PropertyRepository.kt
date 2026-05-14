@@ -8,4 +8,6 @@ interface PropertyRepository {
     suspend fun getAllProperties(): Result<List<Property>>
     suspend fun getPropertiesByOwner(ownerId: String): Result<List<Property>>
     suspend fun createProperty(property: Property): Result<Property>
+
+    suspend fun deleteProperty(id: String): Boolean
 }

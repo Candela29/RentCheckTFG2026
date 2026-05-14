@@ -74,9 +74,12 @@ fun AltaPropiedad(
     val estaAmueblado by propiedadViewModel.estaAmueblado.collectAsState()
     val tieneGaraje by propiedadViewModel.tieneGaraje.collectAsState()
     val tipoVivienda by propiedadViewModel.tipoVivienda.collectAsState()
-
+    val metros by propiedadViewModel.metros.collectAsState()
+    val tienePiscina by propiedadViewModel.tienePiscina.collectAsState()
+    val tieneAire by propiedadViewModel.tieneAire.collectAsState()
+    val tieneCalefaccion by propiedadViewModel.tieneCalefaccion.collectAsState()
     var expanded by remember{ mutableStateOf(false) }
-    val opcionesTipo = listOf("Bajo", "Piso Intermedio", "Ático")
+    val opcionesTipo = listOf("Bajo", "Piso Intermedio", "Ático","Chalet", "Dúplex")
     val azul = Color(0xFF2D63ED)
 
     Scaffold(
@@ -167,6 +170,14 @@ fun AltaPropiedad(
                             shape = RoundedCornerShape(12.dp)
                         )
                         OutlinedTextField(
+                            value = metros,
+                            onValueChange = { propiedadViewModel.setMetros(it) },
+                            label = { Text("m²") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.weight(0.7f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        OutlinedTextField(
                             value = habitaciones,
                             onValueChange = {
                                     nuevoTexto->
@@ -178,6 +189,7 @@ fun AltaPropiedad(
                             shape = RoundedCornerShape(12.dp)
                         )
                     }
+
                 }
             }
 
@@ -232,7 +244,22 @@ fun AltaPropiedad(
                         )
                         Text(text = "Tiene garaje")
                     }
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.togglePiscina(!tienePiscina) }) {
+                        Checkbox(checked = tienePiscina, onCheckedChange = { propiedadViewModel.togglePiscina(it) }, colors = CheckboxDefaults.colors(checkedColor = azul))
+                        Text("Tiene piscina")
+                    }
+                    // NUEVO: Checkbox Aire Acondicionado
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleAire(!tieneAire) }) {
+                        Checkbox(checked = tieneAire, onCheckedChange = { propiedadViewModel.toggleAire(it) }, colors = CheckboxDefaults.colors(checkedColor = azul))
+                        Text("Aire acondicionado")
+                    }
+                    // NUEVO: Checkbox Calefacción
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleCalefaccion(!tieneCalefaccion) }) {
+                        Checkbox(checked = tieneCalefaccion, onCheckedChange = { propiedadViewModel.toggleCalefaccion(it) }, colors = CheckboxDefaults.colors(checkedColor = azul))
+                        Text("Calefacción")
+                    }
 
+                    Spacer(modifier = Modifier.height(24.dp))
 
                 }
 

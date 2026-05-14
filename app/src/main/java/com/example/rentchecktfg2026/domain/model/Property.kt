@@ -13,5 +13,8 @@ data class Property(
     val isFurnished: Boolean = false,
     val hasGarage: Boolean = false,
     val propertyType: String = "",
-
+    val size: Int=0,
+    val hasPool: Boolean=false,
+    val hasAirConditioning: Boolean=false,
+    val hasHeating: Boolean=false,
 )
