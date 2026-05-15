@@ -28,6 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.rentchecktfg2026.presentation.ui.components.PrivacyPolicySheet
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.style.TextDecoration
 
 
 import com.example.rentchecktfg2026.R
@@ -37,6 +42,7 @@ import com.example.rentchecktfg2026.presentation.navigation.Screen
 import com.example.rentchecktfg2026.presentation.viewmodels.RegistroViewModel
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(
     navController: NavController,
@@ -55,6 +61,11 @@ fun RegistroScreen(
     val loading by registroViewModel.loading.collectAsState()
     val mensaje by registroViewModel.mensaje.collectAsState()
     val registroExitoso by registroViewModel.registroExitoso.collectAsState()
+    val politicasAceptadas by registroViewModel.politicasAceptadas.collectAsState()
+
+    //manejo del bottomSheet
+    val sheetState = rememberModalBottomSheetState()
+    var showSheet by remember { mutableStateOf(false)}
 
     val prefijos = listOf("+34 🇪🇸", "+504 🇭🇳", "+52 🇲🇽", "+54 🇦🇷", "+1 🇺🇸")
     var prefijoSeleccionado by remember { mutableStateOf(prefijos[0]) }
@@ -201,8 +212,34 @@ fun RegistroScreen(
                 label = { Text("Confirmar Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 leadingIcon = { Icon(Icons.Default.Lock, null) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
             )
+
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = politicasAceptadas,
+                    onCheckedChange = { registroViewModel.actualizarPoliticas(it) }
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        append("Acepto las ")
+                        withStyle(style = SpanStyle(
+                            color = azul,
+                            textDecoration = TextDecoration.Underline,
+                            fontWeight = FontWeight.Bold
+                        )) {
+                            append("políticas y privacidad")
+                        }
+                    },
+                    modifier = Modifier.clickable { showSheet = true },
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -255,6 +292,27 @@ fun RegistroScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
+            }
+
+            if (showSheet) {
+                PrivacyPolicySheet(
+                    onDismiss = { showSheet = false },
+                    onAccept = {
+                        // Esto marca el checkbox automáticamente en el ViewModel
+                        registroViewModel.actualizarPoliticas(true)
+                    },
+                    sheetState = sheetState
+                )
+            }
+
+            if (showSheet) {
+                PrivacyPolicySheet(
+                    onDismiss = { showSheet = false },
+                    onAccept = {
+                        registroViewModel.actualizarPoliticas(true)
+                    },
+                    sheetState = sheetState
+                )
             }
         }
     }
