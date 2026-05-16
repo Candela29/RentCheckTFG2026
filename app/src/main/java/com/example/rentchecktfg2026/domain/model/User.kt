@@ -11,7 +11,7 @@ data class User (
 
     val emailVerified: Boolean = false,
     val documentExpiryAt: Long = 0L,
-
+    var favorito: Boolean = false,
     // Estos campos son opcionales
     val dniUrl: String = "",
     val nominaUrl: String = "",

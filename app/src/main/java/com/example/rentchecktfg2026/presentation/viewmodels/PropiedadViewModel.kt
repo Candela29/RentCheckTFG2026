@@ -143,16 +143,15 @@ class PropiedadViewModel (
         }
     }
 
-
-
-        fun cargarMisPropiedades() {
+    fun cargarMisPropiedades() {
             viewModelScope.launch {
                 // Usamos el repositorio en lugar de llamar a Firestore directo
                 val res = repository.getAllProperties()
                 _listaPropiedades.value = res.getOrDefault(emptyList())
             }
 
-        }
+    }
+
     fun removePropiedad(id:String){
 
         viewModelScope.launch {

@@ -94,7 +94,7 @@ fun Login(
                 painter= painterResource(id=R.drawable.logo),
                 contentDescription = "Logo Rent Check",
                 modifier = Modifier
-                    .size(150.dp).padding(16.dp),
+                    .size(250.dp).padding(16.dp),
                 contentScale = ContentScale.Fit
             )
             Text(text="Bienvenido de nuevo", color=Color.Black,

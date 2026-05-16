@@ -94,4 +94,10 @@ interface ApiService {
 
     @DELETE("api/properties/{id}")
     suspend fun deleteProperty(@Path("id") id: String): Response<Unit>
+
+    @DELETE("api/user/{userId}")
+    suspend fun deleteUser(
+        @Path("userId") userId: String
+
+    ): Response<Void>
 }

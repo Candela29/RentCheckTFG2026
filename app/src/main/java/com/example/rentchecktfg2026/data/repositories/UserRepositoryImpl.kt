@@ -111,6 +111,16 @@ class UserRepositoryImpl(
         }
         }
 
+    override suspend fun deleteUSer (userId: String):Boolean{
+        return try{
+            val response=api.deleteUser(userId)
+            response.isSuccessful
+        }catch (e: Exception){
+            Log.e("API_ERROR","Error al borrar usuario: ${e.message}")
+            false
+        }
+    }
+
 
     override fun cerrarSesion(){
         auth.signOut()

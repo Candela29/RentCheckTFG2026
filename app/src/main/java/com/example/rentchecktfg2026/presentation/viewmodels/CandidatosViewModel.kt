@@ -12,6 +12,7 @@ import com.example.rentchecktfg2026.network.RetrofitClient
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class CandidatosViewModel(
     private val repository: UserRepository ,
@@ -55,5 +56,46 @@ class CandidatosViewModel(
 
     fun limpiarFiltro() {
         _candidatos.value = listaOriginal
+    }
+    fun eliminarCandidato(id:String){
+        viewModelScope.launch {
+            val exito = repository.deleteUSer(id)
+            if (exito) {
+                // Filtramos la lista actual para quitar al que acabamos de borrar
+                val listaActualizada = listaOriginal.filter { it.id != id }
+
+                // Actualizamos ambas listas para que el cambio sea permanente en la UI
+                listaOriginal = listaActualizada
+                _candidatos.value = listaActualizada
+
+                Log.d("CANDIDATOS", "UI actualizada tras borrado")
+            }
+        }
+
+    }
+
+    fun ocultarCandidatoDeLaLista(id:String) {
+        viewModelScope.launch {
+            try {
+                // En lugar de borrar el documento, solo marcamos una propiedad 'oculto'
+                firestore.collection("inquilinos").document(id)
+                    .update("oculto", true) // Añadimos este campo en Firebase
+                    .await()
+
+                Log.d("FIREBASE", "Candidato marcado como oculto")
+                // Como tienes un SnapshotListener en 'obtenerInquilinos',
+                // la lista se actualizará sola si añades el filtro allí.
+            } catch (e: Exception) {
+                Log.e("ERROR", "No se pudo ocultar: ${e.message}")
+            }
+        }
+    }
+    fun toggleFavorito(user: User) {
+        viewModelScope.launch {
+            val nuevoEstado = !user.favorito
+            firestore.collection("inquilinos").document(user.id)
+                .update("favorito", nuevoEstado) // <--- Actualiza con el nuevo nombre
+                .await()
+        }
     }
 }
