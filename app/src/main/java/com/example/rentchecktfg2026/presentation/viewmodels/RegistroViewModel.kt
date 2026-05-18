@@ -80,7 +80,7 @@ class RegistroViewModel(private val repository: UserRepository) : ViewModel() {
                     telefono = telefono,
                     role = rol.uppercase(),
                     emailVerified = false,
-                    documentExpiryAt = System.currentTimeMillis(), // Marca de tiempo de aceptación
+                    documentExpiryAt = System.currentTimeMillis(),
                     scoring = 0,
                     contractType = "",
                 )

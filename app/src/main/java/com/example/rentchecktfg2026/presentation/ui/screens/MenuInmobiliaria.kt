@@ -94,7 +94,7 @@ fun MenuInmobiliaria(navController: NavController) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Card 1: SUBIR PROPIEDAD
+
             Card(
                 onClick = {navController.navigate(Screen.AltaPropiedad.route) },
                 modifier = Modifier
@@ -142,8 +142,7 @@ fun MenuInmobiliaria(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Card 2: VER CANDIDATOS
-            Card(
+           Card(
                 onClick = { navController.navigate(Screen.CandidatosAct.route) },
                 modifier = Modifier
                     .fillMaxWidth()

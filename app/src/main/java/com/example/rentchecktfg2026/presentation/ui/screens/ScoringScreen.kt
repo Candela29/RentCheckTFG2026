@@ -145,7 +145,7 @@ fun ScoringScreen(navController: NavController,
                                }
                            }
                        )
-                       //Hago la caja clickable
+
                        Box(
                            modifier = Modifier
                                .matchParentSize()
@@ -207,7 +207,7 @@ fun ScoringScreen(navController: NavController,
                     val a = alquiler.toIntOrNull() ?: 0
                     val ant = antiguedad.toIntOrNull() ?: 0
 
-                    // 2. IMPORTANTE: calcularScoring ahora devuelve un OBJETO (ScoringResult), no un Int
+                    // 2. IMPORTANTE: calcularScoring ahora devuelve un OBJETO
                     val resultadoCompleto = calcularScoring(
                         salario = s,
                         alquiler = a,
@@ -218,7 +218,7 @@ fun ScoringScreen(navController: NavController,
                     )
 
                     // 3. Usamos la función del ViewModel que acepta estos nuevos tipos
-                    // Nota: Asegúrate de que el ViewModel tenga esta función llamada calcularYGuardar
+
                     scoringViewModel.calcularYGuardar(
                         s = s.toDouble(),
                         a = a.toDouble(),
@@ -227,7 +227,7 @@ fun ScoringScreen(navController: NavController,
                         result = resultadoCompleto
                     )
 
-                    // 4. Si quieres guardar el score local para mostrarlo abajo:
+
 
                     score = resultadoCompleto.total
                     navController.navigate(Screen.DetalleScoring.route)

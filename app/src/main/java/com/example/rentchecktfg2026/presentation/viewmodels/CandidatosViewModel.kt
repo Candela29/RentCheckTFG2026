@@ -20,9 +20,9 @@ class CandidatosViewModel(
 ) : ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
-    // Esta es la fuente de verdad (siempre tiene todos los datos)
+
     private var listaOriginal = listOf<User>()
-    // Esta es la que observa la UI
+
     private val _candidatos = MutableLiveData<List<User>>(emptyList())
     val candidatos: LiveData<List<User>> = _candidatos
 

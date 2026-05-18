@@ -17,17 +17,17 @@ class LoginViewModel(
 ): ViewModel(
 
 ) {
-    // Estado para el usuario
+
     private val auth = FirebaseAuth.getInstance()
 
     private val _username = MutableStateFlow("")
     val username = _username.asStateFlow()
 
-    // Estado para la contraseña
+
     private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
-    // Estado para la visibilidad de la contraseña
+
     private val _passwordVisible = MutableStateFlow(false)
     val passwordVisible = _passwordVisible.asStateFlow()
 
@@ -38,7 +38,7 @@ class LoginViewModel(
     private val _error = MutableStateFlow("")
     val error = _error.asStateFlow()
 
-    // Funciones para actualizar los estados
+
     fun setUsername(newValue: String) {
         _username.value = newValue
     }
@@ -66,7 +66,7 @@ class LoginViewModel(
                 val uid = result.user?.uid
                 if (uid != null) {
                     viewModelScope.launch {
-                        // 1. Obtienes el usuario de FIRESTORE
+
                         val res = repository.getUserById(uid)
                         val user = res.getOrNull()
 

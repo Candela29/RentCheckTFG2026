@@ -182,7 +182,7 @@ fun InquilinoPerfil(
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            //Resumen
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
@@ -229,7 +229,7 @@ fun DocumentCard(titulo:String, subido:Boolean, onClick:()->Unit ) {
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // Icono dinámico: cambia según el estado 'subido'
+
             Icon(
                 imageVector = if (subido) Icons.Default.CheckCircle else Icons.Default.AddCircle,
                 contentDescription = null,
@@ -237,7 +237,7 @@ fun DocumentCard(titulo:String, subido:Boolean, onClick:()->Unit ) {
                 tint = if (subido) Color(0xFF4CAF50) else Color(0xFF2D63ED)
             )
 
-            // Usamos Spacer como en tus apuntes para separar el icono del texto
+
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {

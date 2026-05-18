@@ -113,28 +113,28 @@ class PropiedadViewModel (
                 //Crear el objeto con los datos actuales
                 val nuevaPropiedad = Property(
                     title = titulo.value,
-                    price = precio.value.toDoubleOrNull() ?: 0.0, // Property usa Double
+                    price = precio.value.toDoubleOrNull() ?: 0.0,
                     rooms = habitaciones.value.toIntOrNull() ?: 0,
                     hasElevator = tieneAscensor.value,
                     isFurnished = estaAmueblado.value,
                     hasGarage = tieneGaraje.value,
                     propertyType = tipoVivienda.value,
                     size = _metros.value.toIntOrNull() ?: 0,
-                    hasPool = _tienePiscina.value,         // <-- NUEVO
-                    hasAirConditioning = _tieneAire.value, // <-- NUEVO
+                    hasPool = _tienePiscina.value,
+                    hasAirConditioning = _tieneAire.value,
                     hasHeating = _tieneCalefaccion.value,
                 )
                 Log.d("DEBUG_JSON", "Enviando Tipo: ${tipoVivienda.value} y Metros: ${_metros.value}")
 
                 Log.d("PROPIEDAD", "Guardando: $nuevaPropiedad")
-                //Llamar al repositorio para guardar en Firestore
+
                 val resultado = repository.createProperty(nuevaPropiedad)
                 Log.d("PROPIEDAD", "Resultado: ${resultado.isSuccess}")
                 Log.d("PROPIEDAD", "Error: ${resultado.exceptionOrNull()?.message}")
 
                 if (resultado.isSuccess) {
 
-                    // Ejecutamos la navegación hacia atrás solo si hubo éxito
+
                     onSuccess()
                 }
             } catch (e: Exception) {
@@ -145,7 +145,7 @@ class PropiedadViewModel (
 
     fun cargarMisPropiedades() {
             viewModelScope.launch {
-                // Usamos el repositorio en lugar de llamar a Firestore directo
+
                 val res = repository.getAllProperties()
                 _listaPropiedades.value = res.getOrDefault(emptyList())
             }

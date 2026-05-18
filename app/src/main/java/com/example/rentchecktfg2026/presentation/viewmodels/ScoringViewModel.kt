@@ -59,7 +59,7 @@ class ScoringViewModel(
 
             val nuevoInquilino = User(
                 id = id,
-                name = usuarioActual?.name ?: "",  // ← nombre real de Firestore
+                name = usuarioActual?.name ?: "",
                 email = usuarioActual?.email ?: auth.currentUser?.email ?: "",
                 scoring = result.total,
                 contractType = contrato,
@@ -80,7 +80,7 @@ class ScoringViewModel(
             val usuarioActual = repository.getUserById(uid).getOrNull()
             val objetoInquilino = User(
                 id = uid,
-                name = usuarioActual?.name ?: "",  // ← nombre real de Firestore
+                name = usuarioActual?.name ?: "",
                 email = usuarioActual?.email ?: auth.currentUser?.email ?: "",
                 scoring = score,
                 contractType = contrato,

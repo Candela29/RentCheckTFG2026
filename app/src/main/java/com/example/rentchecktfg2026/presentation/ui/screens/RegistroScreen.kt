@@ -72,7 +72,7 @@ fun RegistroScreen(
 
     val azul = Color(0xFF2D63ED)
 
-    // Navegación automática cuando el registro es exitoso
+
     LaunchedEffect(registroExitoso) {
         if (registroExitoso) {
             registroViewModel.resetEstado()
@@ -137,7 +137,7 @@ fun RegistroScreen(
                 color= Color.Gray
             )
             Spacer(modifier = Modifier.height(16.dp))
-            // Campos de texto comunes
+
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -160,7 +160,7 @@ fun RegistroScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Teléfono con prefijo
+
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Box {
                     Row(
@@ -243,7 +243,7 @@ fun RegistroScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // BOTÓN SIMPLIFICADO: Ahora solo llama al ViewModel
+
             Button(
                 colors = ButtonDefaults.buttonColors(containerColor = azul),
                 enabled = !loading,
@@ -272,7 +272,7 @@ fun RegistroScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Mensajes de error del ViewModel
+
             if (mensaje.isNotEmpty()) {
                 Text(text = mensaje, color = Color.Red)
             }

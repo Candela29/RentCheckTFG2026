@@ -212,7 +212,7 @@ fun AltaPropiedad(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // --- CARACTERÍSTICAS (CHECKBOXES) ---
+            // --- CARACTERÍSTICAS  ---
             Text("Características",
                 fontWeight = FontWeight.Bold,
                 style=MaterialTheme.typography.titleMedium,
@@ -225,7 +225,7 @@ fun AltaPropiedad(
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
-                    // Item Ascensor
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -239,7 +239,7 @@ fun AltaPropiedad(
                         Text(text = "Tiene ascensor")
                     }
 
-                    // Item Amueblado
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -275,7 +275,7 @@ fun AltaPropiedad(
                         )
                         Text("Tiene piscina")
                     }
-                    // NUEVO: Checkbox Aire Acondicionado
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -287,7 +287,7 @@ fun AltaPropiedad(
                         )
                         Text("Aire acondicionado")
                     }
-                    // NUEVO: Checkbox Calefacción
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -361,7 +361,7 @@ fun AltaPropiedad(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // BOTÓN PUBLICAR
+
             Button(
                 onClick = { propiedadViewModel.registrarPropiedad{
                     navController.popBackStack()

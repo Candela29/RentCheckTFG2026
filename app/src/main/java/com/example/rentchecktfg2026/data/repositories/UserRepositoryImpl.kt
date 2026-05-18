@@ -72,8 +72,6 @@ class UserRepositoryImpl(
                     try {
                         doc.toObject(User::class.java)
                     } catch (e: Exception) {
-                        // Si un documento está corrupto (ej. scoring es String),
-                        // lo logueamos y lo saltamos en lugar de cerrar la app.
                         Log.e("FIREBASE_ERROR", "Error en doc ${doc.id}: ${e.message}")
                         null
                     }
@@ -91,7 +89,7 @@ class UserRepositoryImpl(
             firestore.collection("inquilinos").document(user.id)
                 .set(user)
                 .await()
-            Log.d("FIRESTORE", "✅ Guardado correctamente")
+            Log.d("FIRESTORE", "Guardado correctamente")
             true
         }catch (e: Exception){
             e.printStackTrace()

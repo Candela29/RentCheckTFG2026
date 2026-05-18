@@ -186,7 +186,7 @@ fun PropertyCard(property: Property,propiedadViewModel: PropiedadViewModel, navC
         onClick = {expanded= !expanded}
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // --- PARTE SIEMPRE VISIBLE ---
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -223,34 +223,34 @@ fun PropertyCard(property: Property,propiedadViewModel: PropiedadViewModel, navC
                 }
             }
 
-            // --- CONTENIDO EXPANDIDO ---
+
             if (expanded) {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
-                    // 1. Tipo (Con seguridad ante nulos)
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Info, null, modifier = Modifier.size(20.dp), tint = azul)
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Tipo: ${property.propertyType?.ifEmpty { "No especificado" } ?: "No especificado"}", style = MaterialTheme.typography.bodyMedium)
                     }
 
-                    // 2. Precio
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.AttachMoney, null, modifier = Modifier.size(20.dp), tint = azul)
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Precio total: ${property.price} €", style = MaterialTheme.typography.bodyMedium)
                     }
 
-                    // 3. Metros (Usa el operador Elvis ?: para poner 0 si es nulo)
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Home, null, modifier = Modifier.size(20.dp), tint = azul)
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Superficie: ${property.size ?: 0} m²", style = MaterialTheme.typography.bodyMedium)
                     }
 
-                    // 4. Extras (Solo se muestran si el valor es TRUE y NO es nulo)
+
                     if (property.hasElevator == true) {
                         ExtraItem(azul, "Tiene ascensor")
                     }
@@ -264,17 +264,17 @@ fun PropertyCard(property: Property,propiedadViewModel: PropiedadViewModel, navC
                         ExtraItem(Color(0xFF4CAF50), "Calefacción central")
                     }
                 }
-                // ... resto del código (botones)
+
             }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Acciones (Eliminar/Editar)
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Botón Editar
+
                     IconButton(onClick = {
                     propiedadViewModel.seleccionarPropiedad(property)
 
@@ -285,7 +285,7 @@ fun PropertyCard(property: Property,propiedadViewModel: PropiedadViewModel, navC
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // Botón Eliminar
+
                     IconButton(
                         onClick = { showDialog = true }, // Solo abre el diálogo
                         modifier = Modifier.size(40.dp)

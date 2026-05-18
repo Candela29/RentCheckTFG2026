@@ -219,11 +219,3 @@ val azul = Color(0xFF2D63ED)
     }
 }
 
-/*@Composable
-@Preview(showBackground = true)
-
-fun CandidatosActPreview() {
-
-    CandidatosAct(rememberNavController())
-
-}*/

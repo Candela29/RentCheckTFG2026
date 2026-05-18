@@ -11,7 +11,7 @@ object RetrofitClient {
 
     // 10.0.2.2 es el "localhost" desde el emulador de Android
     const val BASE_URL = "http://10.0.2.2:8080"
-        //"http://10.0.2.2:8080/"
+
 
     //OkHttpClient es un interceptor que recupera el Token de Firebase en cada petición.
     private val okHttpClient = OkHttpClient.Builder()

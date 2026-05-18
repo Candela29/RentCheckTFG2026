@@ -13,10 +13,10 @@ data class User (
     val documentExpiryAt: Long = 0L,
     var favorito: Boolean = false,
     var oculto: Boolean=false,
-    // Estos campos son opcionales
+
     val dniUrl: String = "",
     val nominaUrl: String = "",
     val contractType: String = "",
     val scoring: Int = 0,
-    val cif: String? = null // Por ejemplo, esto solo lo tendría la Inmobiliaria
+    val cif: String? = null
 )

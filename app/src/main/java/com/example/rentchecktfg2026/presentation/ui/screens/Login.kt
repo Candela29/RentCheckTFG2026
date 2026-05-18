@@ -183,9 +183,7 @@ fun Login(
 @Preview(showBackground = true)
 @Composable
 fun PreviewLogin(){
-    //Login(rememberNavController())
 
-        // Pasa un NavController vacío que no haga nada
         Login(navController = rememberNavController())
 
 }

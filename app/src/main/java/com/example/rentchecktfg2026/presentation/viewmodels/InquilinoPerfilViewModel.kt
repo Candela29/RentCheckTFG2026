@@ -29,22 +29,22 @@ class InquilinoPerfilViewModel(
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
-    // Estado para el Nombre
+
     private val _nombre = MutableStateFlow("")
     val nombre: StateFlow<String> = _nombre.asStateFlow()
 
-    // Estado para el Email
+
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()
 
     private val _telefono= MutableStateFlow("")
     val telefono: StateFlow<String> =  _telefono.asStateFlow()
 
-    // Estado del DNI (False = no subido)
+
     private val _dniSubido = MutableStateFlow(false)
     val dniSubido: StateFlow<Boolean> = _dniSubido.asStateFlow()
 
-    // Estado de la Nómina (False = no subida)
+
     private val _nominaSubida = MutableStateFlow(false)
     val nominaSubida: StateFlow<Boolean> = _nominaSubida.asStateFlow()
 
@@ -67,7 +67,7 @@ class InquilinoPerfilViewModel(
             Log.d("SUBIDA", "Resultado: ${result.isSuccess}")
             Log.d("SUBIDA", "Error: ${result.exceptionOrNull()?.message}")
 
-            withContext(Dispatchers.Main) { // Volvemos al hilo principal solo para actualizar la pantalla
+            withContext(Dispatchers.Main) {
                 if (result.isSuccess) {
                     if (esDni) _dniSubido.value = true else _nominaSubida.value = true
                 } else {
@@ -77,7 +77,7 @@ class InquilinoPerfilViewModel(
         }
     }
 
-    // Funciones por si quieres rellenar los datos desde otra pantalla
+
     fun cargarDatosUsuario() {
         val uid = auth.currentUser?.uid ?: return
         viewModelScope.launch {
