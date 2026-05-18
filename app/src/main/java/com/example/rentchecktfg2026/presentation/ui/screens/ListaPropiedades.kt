@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Check
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.setValue
+
 import androidx.navigation.NavController
 import com.example.rentchecktfg2026.domain.model.Property
 import com.example.rentchecktfg2026.presentation.navigation.Screen
@@ -76,18 +78,41 @@ fun ListaPropiedades (propiedadViewModel: PropiedadViewModel= koinViewModel(),
             MenuDeAcciones(navController=navController, titulo = "Lista de Inmuebles", rol= "INMOBILIARIA")
 
         },
+
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {navController.navigate(Screen.AltaPropiedad.route)},
-                containerColor = azul
+
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Añadir Propiedad",
-                    tint = Color.White
-                )
+
+                FloatingActionButton(
+                    onClick = { navController.popBackStack() },
+                    containerColor = azul,
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Atrás"
+                    )
+                }
+
+
+                FloatingActionButton(
+                    onClick = { navController.navigate(Screen.AltaPropiedad.route) },
+                    containerColor = azul
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Añadir Propiedad",
+                        tint = Color.White
+                    )
+                }
             }
-        }
+        },
+
+
     ) {
 
         innerPadding->

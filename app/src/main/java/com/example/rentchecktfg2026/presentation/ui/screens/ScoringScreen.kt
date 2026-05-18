@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.*
@@ -60,6 +61,21 @@ fun ScoringScreen(navController: NavController,
         topBar = {
             MenuDeAcciones(navController=navController,titulo="Cálculo de scoring",rol="INQUILINO")
 
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                containerColor = azul,
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Atrás"
+                )
+            }
         },
         containerColor = gris
     ) { innerPadding ->

@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Edit
@@ -32,6 +33,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -86,6 +88,21 @@ fun AltaPropiedad(
         topBar = {
             MenuDeAcciones(navController=navController,titulo="Nueva Propiedad",rol="INMOBILIARIA")
 
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                containerColor = azul,
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Atrás"
+                )
+            }
         }
     ) { innerPadding ->
         Column(

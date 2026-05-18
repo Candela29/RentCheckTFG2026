@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +58,21 @@ fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewMod
         topBar = {
             MenuDeAcciones(navController=navController,titulo="Cálculo estimado del scoring",rol="INQUILINO")
 
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                containerColor = azul,
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Atrás"
+                )
+            }
         }
     ) { innerPadding ->
         Column(
