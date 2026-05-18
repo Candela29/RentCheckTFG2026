@@ -181,7 +181,7 @@ fun ScoringScreen(navController: NavController,
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = {

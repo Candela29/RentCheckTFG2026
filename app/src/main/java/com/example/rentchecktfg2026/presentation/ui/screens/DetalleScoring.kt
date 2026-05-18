@@ -76,6 +76,7 @@ fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewMod
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ){
+
                     Column(
                         modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -123,7 +124,8 @@ fun DetalleScoring(navController: NavController,scoringViewModel: ScoringViewMod
                 //Antigüedad (máximo 15 puntos)
                 ItemBarra("Garantías y pago", res.puntosExtras, 20, Color(0xFF9C27B0))
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.weight(1f))
+
 
                 Button(
                     onClick = {
