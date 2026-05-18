@@ -112,7 +112,7 @@ fun CandidatosAct(
                     }
                 }else{
                     LazyColumn {
-                        items(candidatos) { candidato ->
+                        items(candidatos, key={it.id}) { candidato ->
                             CandidatoCard(candidato, vm)
                         }
                     }

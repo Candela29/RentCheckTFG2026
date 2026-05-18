@@ -2,10 +2,13 @@ package com.example.rentchecktfg2026.presentation.ui.screens
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -23,6 +26,8 @@ import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 import com.example.rentchecktfg2026.presentation.ui.utils.*
 import com.example.rentchecktfg2026.presentation.viewmodels.ScoringViewModel
 import org.koin.androidx.compose.koinViewModel
+import kotlin.contracts.contract
+import kotlin.math.exp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +39,7 @@ fun ScoringScreen(navController: NavController,
 
     var alquiler by remember { mutableStateOf("") }
 
-    var contrato by remember { mutableStateOf("Indefinido") }
+
 
     var antiguedad by remember { mutableStateOf("") }
 
@@ -43,7 +48,9 @@ fun ScoringScreen(navController: NavController,
     var impagosPrevios by remember { mutableStateOf(false) }
 
     var score by remember { mutableStateOf<Int?>(null) }
-
+    var contrato by remember { mutableStateOf("Indefinido") }
+    var expanded by remember { mutableStateOf(false) }
+    val opcionesContrato = listOf("Indefinido", "Temporal", "Autónomo", "Funcionario","Fijo")
 
     val azul = Color(0xFF2D63ED)
     val gris = Color(0xFFF7F9FC)
@@ -103,6 +110,48 @@ fun ScoringScreen(navController: NavController,
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                   Box(modifier = Modifier.fillMaxWidth()) {
+                       OutlinedTextField(
+                           value = contrato,
+                           onValueChange = {},
+                           label = {Text("Tipo de contrato")},
+                           modifier = Modifier.fillMaxWidth(),
+                           shape = RoundedCornerShape(12.dp),
+                           trailingIcon = {
+                               IconButton(onClick = { expanded=true }) {
+                                   Icon(
+                                       imageVector = if(expanded) Icons.Default.ArrowUpward else Icons.Default.ArrowDownward,
+                                       contentDescription = null
+                                   )
+                               }
+                           }
+                       )
+                       //Hago la caja clickable
+                       Box(
+                           modifier = Modifier
+                               .matchParentSize()
+                               .padding(top = 8.dp) // Para no tapar el label
+                               .clickable { expanded = true }
+                       )
+                       DropdownMenu(
+                           expanded=expanded,
+                           onDismissRequest = {expanded=false},
+                           modifier = Modifier.fillMaxWidth(0.8f)
+                       ) {
+                           opcionesContrato.forEach { opcion->
+                               DropdownMenuItem(
+                                   text={Text(opcion)},
+                                   onClick = {
+                                       contrato=opcion
+                                       expanded=false //cierro menú
+                                   }
+                               )
+                           }
+                       }
+                   }
 
                     Spacer(modifier = Modifier.height(16.dp))
 

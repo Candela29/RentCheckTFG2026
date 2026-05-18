@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.rentchecktfg2026.presentation.navigation.Screen
+import com.example.rentchecktfg2026.presentation.ui.components.MenuDeAcciones
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,17 +55,9 @@ fun MenuInmobiliaria(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title={
-                    Text("Panel de Gestión",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = azulIcono)
+            MenuDeAcciones(navController=navController, titulo = "Panel de inmobiliaria ", rol= "INMOBILIARIA")
 
-            )
-        }
+        },
     ) { innerPadding ->
 
         Column(

@@ -116,7 +116,7 @@ fun RegistroScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Usando el CardRol de tu compañera
+
             Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                 Box(modifier = Modifier.weight(1f)) {
@@ -211,7 +211,7 @@ fun RegistroScreen(
                 onValueChange = { confirmPassword = it },
                 label = { Text("Confirmar Password") },
                 visualTransformation = PasswordVisualTransformation(),
-                leadingIcon = { Icon(Icons.Default.Lock, null) },
+                leadingIcon = { Icon(Icons.Default.Lock, null, tint=azul) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )

@@ -211,7 +211,8 @@ fun AltaPropiedad(
                     // Item Ascensor
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleAscensor(!tieneAscensor) }
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { propiedadViewModel.toggleAscensor(!tieneAscensor) }
                     ) {
                         Checkbox(
                             checked = tieneAscensor,
@@ -224,7 +225,8 @@ fun AltaPropiedad(
                     // Item Amueblado
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleAmueblado(!estaAmueblado) }
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { propiedadViewModel.toggleAmueblado(!estaAmueblado) }
                     ) {
                         Checkbox(
                             checked = estaAmueblado,
@@ -235,7 +237,8 @@ fun AltaPropiedad(
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleGaraje(!tieneGaraje) }
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { propiedadViewModel.toggleGaraje(!tieneGaraje) }
                     ) {
                         Checkbox(
                             checked = tieneGaraje,
@@ -244,20 +247,42 @@ fun AltaPropiedad(
                         )
                         Text(text = "Tiene garaje")
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.togglePiscina(!tienePiscina) }) {
-                        Checkbox(checked = tienePiscina, onCheckedChange = { propiedadViewModel.togglePiscina(it) }, colors = CheckboxDefaults.colors(checkedColor = azul))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { propiedadViewModel.togglePiscina(!tienePiscina) }) {
+                        Checkbox(
+                            checked = tienePiscina,
+                            onCheckedChange = { propiedadViewModel.togglePiscina(it) },
+                            colors = CheckboxDefaults.colors(checkedColor = azul)
+                        )
                         Text("Tiene piscina")
                     }
                     // NUEVO: Checkbox Aire Acondicionado
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleAire(!tieneAire) }) {
-                        Checkbox(checked = tieneAire, onCheckedChange = { propiedadViewModel.toggleAire(it) }, colors = CheckboxDefaults.colors(checkedColor = azul))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { propiedadViewModel.toggleAire(!tieneAire) }) {
+                        Checkbox(
+                            checked = tieneAire,
+                            onCheckedChange = { propiedadViewModel.toggleAire(it) },
+                            colors = CheckboxDefaults.colors(checkedColor = azul)
+                        )
                         Text("Aire acondicionado")
                     }
                     // NUEVO: Checkbox Calefacción
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { propiedadViewModel.toggleCalefaccion(!tieneCalefaccion) }) {
-                        Checkbox(checked = tieneCalefaccion, onCheckedChange = { propiedadViewModel.toggleCalefaccion(it) }, colors = CheckboxDefaults.colors(checkedColor = azul))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { propiedadViewModel.toggleCalefaccion(!tieneCalefaccion) }) {
+                        Checkbox(
+                            checked = tieneCalefaccion,
+                            onCheckedChange = { propiedadViewModel.toggleCalefaccion(it) },
+                            colors = CheckboxDefaults.colors(checkedColor = azul)
+                        )
                         Text("Calefacción")
                     }
+                }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -279,6 +304,9 @@ fun AltaPropiedad(
                             onClick = { expanded=true },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White
+                            )
                         ) {
                             Row(modifier= Modifier.padding(16.dp).fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -294,6 +322,7 @@ fun AltaPropiedad(
                             }
                         }
 
+                        Spacer(modifier= Modifier.height(12.dp))
                         DropdownMenu(
                             expanded= expanded,
                             onDismissRequest = {expanded =false},
@@ -311,9 +340,9 @@ fun AltaPropiedad(
                         }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.weight(1f)) // Esto empuja el botón abajo
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             // BOTÓN PUBLICAR
             Button(

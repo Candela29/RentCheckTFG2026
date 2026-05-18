@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -15,6 +16,7 @@ fun PrivacyPolicySheet(
     onAccept: () -> Unit,
     sheetState: SheetState
 ) {
+    val azul= Color(0xFF2D63ED)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -30,7 +32,7 @@ fun PrivacyPolicySheet(
                 text = "Tratamiento de Datos Sensibles",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = azul
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -48,6 +50,10 @@ fun PrivacyPolicySheet(
                     onAccept()
                     onDismiss()
                 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = azul,
+                    contentColor = Color.White
+                ),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("He leído y acepto")
